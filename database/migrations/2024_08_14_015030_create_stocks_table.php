@@ -12,7 +12,6 @@ return new class extends Migration {
     {
         Schema::create('stocks', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('products_id')->constrained();
             $table->integer('quantity');
             $table->timestamps();
         });

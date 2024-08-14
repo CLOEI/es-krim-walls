@@ -14,6 +14,8 @@ return new class extends Migration {
             $table->id();
             $table->string('barcode');
             $table->string('name')->unique();
+            $table->foreignId('stocks_id')->constrained();
+            $table->foreignId('prices_id')->constrained();
             $table->timestamps();
         });
     }

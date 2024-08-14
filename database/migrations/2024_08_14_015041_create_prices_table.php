@@ -10,9 +10,8 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('price', function (Blueprint $table) {
+        Schema::create('prices', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('products_id')->constrained();
             $table->integer('selling_price');
             $table->integer('purchase_price');
             $table->timestamps();
