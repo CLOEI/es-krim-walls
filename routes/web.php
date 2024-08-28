@@ -21,3 +21,6 @@ Route::get('/daftar_barang', "App\Http\Controllers\ProductController@show")->nam
 Route::post('/barang', "App\Http\Controllers\ProductController@create")->name('tambah_barang');
 Route::put('/barang/{id}', "App\Http\Controllers\ProductController@edit")->name('edit_barang');
 Route::delete('/barang/{id}', "App\Http\Controllers\ProductController@remove")->name('remove_barang');
+
+Route::get('/daftar_barang_keluar', "App\Http\Controllers\ProductOutController@show")->name('daftar_barang_keluar');
+Route::get('/daftar_barang_masuk', "App\Http\Controllers\ProductInController@show")->name('daftar_barang_masuk');
