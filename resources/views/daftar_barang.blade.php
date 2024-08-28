@@ -176,12 +176,12 @@
             document.getElementById('edit_stock_quantity').value = product.stock.quantity;
             document.getElementById('edit_purchase_price').value = product.price.purchase_price;
             document.getElementById('edit_selling_price').value = product.price.selling_price;
-            document.getElementById('editProductForm').action = `/barang/${product.id}`;
+            document.getElementById('editProductForm').action = `/daftar_barang/${product.id}`;
             document.getElementById('editProductModal').classList.remove('hidden');
         }
 
         function openDeleteModal(productId) {
-            document.getElementById('deleteProductForm').action = `/barang/${productId}`;
+            document.getElementById('deleteProductForm').action = `/daftar_barang/${productId}`;
             document.getElementById('deleteProductModal').classList.remove('hidden');
         }
     </script>
