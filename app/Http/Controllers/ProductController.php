@@ -17,12 +17,16 @@ class ProductController extends Controller
         return view('daftar_barang', compact('products'));
     }
 
+    public function add_show()
+    {
+        return view('tambah_produk');
+    }
+
     public function create(Request $request)
     {
         $validatedData = $request->validate([
             'barcode' => 'required|string|max:255',
             'name' => 'required|string|max:255',
-            'stock_quantity' => 'required|integer',
             'purchase_price' => 'required|numeric',
             'selling_price' => 'required|numeric',
         ]);
@@ -36,7 +40,7 @@ class ProductController extends Controller
             ]);
 
             $stock = Stock::create([
-                'quantity' => $validatedData['stock_quantity'],
+                'quantity' => 0,
                 'product_id' => $product->id,
             ]);
 
@@ -53,7 +57,7 @@ class ProductController extends Controller
 
             DB::commit();
 
-            return redirect()->route('daftar_barang')->with('success', 'Product added successfully.');
+            return redirect()->route('tambah_produk')->with('success', 'Product added successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Failed to create product: ' . $e->getMessage());
