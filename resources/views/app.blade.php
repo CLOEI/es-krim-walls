@@ -6,21 +6,21 @@
         <div class="flex p-10 rounded-md bg-white space-x-4 items-center shadow-md">
             <img src="/assets/daftar_barang.png" width="80" height="80">
             <div>
-                <p class="text-3xl font-bold text-[#464255]">0</p>
+                <p class="text-3xl font-bold text-[#464255]">{{ $productsCount }}</p>
                 <p>Daftar Barang</p>
             </div>
         </div>
         <div class="flex p-10 rounded-md bg-white space-x-4 items-center shadow-md">
             <img src="/assets/daftar_barang_keluar.png" width="80" height="80">
             <div>
-                <p class="text-3xl font-bold text-[#464255]">0</p>
+                <p class="text-3xl font-bold text-[#464255]">{{ $productsOutCount }}</p>
                 <p>Daftar Barang Keluar</p>
             </div>
         </div>
         <div class="flex p-10 rounded-md bg-white space-x-4 items-center shadow-md">
             <img src="/assets/daftar_barang_masuk.png" width="80" height="80">
             <div>
-                <p class="text-3xl font-bold text-[#464255]">0</p>
+                <p class="text-3xl font-bold text-[#464255]">{{ $productsInCount }}</p>
                 <p>Daftar Barang Masuk</p>
             </div>
         </div>
@@ -29,8 +29,8 @@
         <div class="flex p-10 rounded-md bg-white space-x-4 items-center shadow-md">
             <img src="/assets/kapasitas_maksimal.png" width="80" height="80">
             <div>
-                <p class="text-3xl font-bold text-[#464255]">0/1500</p>
-                <p>Kapastitas Maksimal Stok</p>
+                <p class="text-3xl font-bold text-[#464255]">{{ $currentStockQuantity }}/1500</p>
+                <p>Kapasitas Maksimal Stok</p>
             </div>
         </div>
         <div class="flex p-10 rounded-md bg-white space-x-4 items-center shadow-md">

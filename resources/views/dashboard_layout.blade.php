@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="flex h-screen overflow-hidden bg-[#F5F5F5]">
-        <div class="bg-white h-screen flex-shrink-0">
+        <div class="bg-white h-screen flex-shrink-0 sticky top-0">
             <h1 class="text-[#46A2A2] text-3xl font-bold text-center py-4">Admin</h1>
             <div class="px-10 space-y-4 mt-10">
                 <a href="/"
@@ -172,7 +172,7 @@
                 </form>
             </div>
         </div>
-        <div class="w-full flex flex-col">
+        <div class="w-full flex flex-col overflow-y-auto">
             <div class="h-20 flex-shrink-0 bg-[#138FA0] flex items-center justify-end px-10">
                 <div class="flex space-x-2 items-center">
                     <div class="w-12 h-12 rounded-md bg-gray-300"></div>
