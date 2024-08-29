@@ -44,7 +44,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/cetak_laporan_stok', "App\Http\Controllers\StockReportController@print")->name('cetak_laporan_stok');
 
     Route::get('/laporan_barang_keluar', "App\Http\Controllers\ProductOutReportController@show")->name('laporan_barang_keluar');
-    Route::get('/laporan_barang_masuk', "App\Http\Controllers\ProductInReportController@show")->name('laporan_barang_masuk');
+    Route::get('/cetak_laporan_barang_keluar', "App\Http\Controllers\ProductOutReportController@print")->name('cetak_laporan_barang_keluar');
+    Route::get('/get-productout', "App\Http\Controllers\ProductOutReportController@getProducts");
 
+    Route::get('/laporan_barang_masuk', "App\Http\Controllers\ProductInReportController@show")->name('laporan_barang_masuk');
+    Route::get('/cetak_laporan_barang_masuk', "App\Http\Controllers\ProductInReportController@print")->name('cetak_laporan_barang_masuk');
+    Route::get('/get-productin', "App\Http\Controllers\ProductInReportController@getProducts");
 });
 

@@ -3,7 +3,7 @@
 @section('content')
     <div class="px-10">
         <div class="flex flex-col items-center justify-center mt-20">
-            <h1 class="font-bold text-6xl">Laporan Stok</h1>
+            <h1 class="font-bold text-6xl">Laporan Barang Masuk</h1>
             <p class="text-3xl font-medium max-w-xl mt-2 text-center">Jl. Surya Kencana No.1, Pamulang Bar., Kec.
                 Pamulang, Kota Tangerang Selatan, Banten 15417</p>
         </div>
@@ -23,10 +23,8 @@
                     <th class="px-4 py-2 border">Barcode</th>
                     <th class="px-4 py-2 border">Nama Produk</th>
                     <th class="px-4 py-2 border">Tanggal</th>
-                    <th class="px-4 py-2 border">Jumlah Stok</th>
-                    <th class="px-4 py-2 border">Harga Beli</th>
-                    <th class="px-4 py-2 border">Harga Jual</th>
-                    <th class="px-4 py-2 border">Nilai Stok</th>
+                    <th class="px-4 py-2 border">Jumlah</th>
+                    <th class="px-4 py-2 border">Total Harga Pembelian</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -75,8 +73,6 @@
                     <td class="px-4 py-2 border">${product.product.name}</td>
                     <td class="px-4 py-2 border">${product.date}</td>
                     <td class="px-4 py-2 border">${product.product.stock.quantity}</td>
-                    <td class="px-4 py-2 border">Rp ${product.product.price.purchase_price}</td>
-                    <td class="px-4 py-2 border">Rp ${product.product.price.selling_price}</td>
                     <td class="px-4 py-2 border">Rp ${product.product.stock.quantity * product.product.price.purchase_price}</td>
                 `;
                     tbody.appendChild(row);
