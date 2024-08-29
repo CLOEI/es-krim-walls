@@ -28,6 +28,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/daftar_barang_keluar/{id}', "App\Http\Controllers\ProductOutController@remove")->name('remove_daftar_barang_keluar');
 
     Route::get('/daftar_barang_masuk', "App\Http\Controllers\ProductInController@show")->name('daftar_barang_masuk');
+    Route::post('/daftar_barang_masuk', "App\Http\Controllers\ProductInController@create")->name('tambah_daftar_barang_masuk');
+    Route::put('/daftar_barang_masuk/{id}', "App\Http\Controllers\ProductInController@edit")->name('edit_daftar_barang_masuk');
+    Route::delete('/daftar_barang_masuk/{id}', "App\Http\Controllers\ProductInController@remove")->name('remove_daftar_barang_masuk');
+
 
     Route::get('/tambah_outlet', "App\Http\Controllers\StallController@show")->name('tambah_outlet');
     Route::post('/tambah_outlet', "App\Http\Controllers\StallController@create")->name('tambah_outlet');
