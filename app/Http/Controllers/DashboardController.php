@@ -17,7 +17,14 @@ class DashboardController extends Controller
         $productsInCount = ProductIn::all()->count();
         $productsOutCount = ProductOut::all()->count();
         $currentStockQuantity = Stock::all()->sum('quantity');
+        $averageDailyStatistics = ProductOut::selectRaw('AVG(items_gone) as average_items_gone')
+            ->fromSub(function ($query) {
+                $query->selectRaw('date, COUNT(*) as items_gone')
+                    ->from('product_out')
+                    ->groupBy('date');
+            }, 'daily_counts')
+            ->first();
 
-        return view('app', compact('productsCount', 'productsInCount', 'productsOutCount', 'currentStockQuantity'));
+        return view('app', compact('productsCount', 'productsInCount', 'productsOutCount', 'currentStockQuantity', 'averageDailyStatistics'));
     }
 }

@@ -36,7 +36,7 @@
         <div class="flex p-10 rounded-md bg-white space-x-4 items-center shadow-md">
             <img src="/assets/rata_rata.png" width="80" height="80">
             <div>
-                <p class="text-3xl font-bold text-[#464255]">0</p>
+                <p class="text-3xl font-bold text-[#464255]">{{ $averageDailyStatistics->average_items_gone }}</p>
                 <p>Rata - rata Barang Keluar Per Hari</p>
             </div>
         </div>
