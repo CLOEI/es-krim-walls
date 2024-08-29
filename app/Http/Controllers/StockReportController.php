@@ -9,8 +9,7 @@ use Illuminate\Http\Request;
 class StockReportController extends Controller
 {
     public function show() {
-        $products = ProductIn::all();
-        return view('laporan_stok', compact('products'));
+        return view('laporan_stok');
     }
 
     public function getProducts(Request $request) {
