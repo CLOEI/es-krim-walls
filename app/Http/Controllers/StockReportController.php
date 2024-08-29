@@ -24,4 +24,8 @@ class StockReportController extends Controller
 
         return response()->json(['products' => $products]);
     }
+
+    public function print(Request $request) {
+        return view('cetak.cetak_laporan_stok');
+    }
 }

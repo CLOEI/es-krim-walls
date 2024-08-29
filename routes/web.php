@@ -41,5 +41,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/laporan_stok', "App\Http\Controllers\StockReportController@show")->name('laporan_stok');
     Route::get('/get-products', "App\Http\Controllers\StockReportController@getProducts");
+    Route::get('/cetak_laporan_stok', "App\Http\Controllers\StockReportController@print")->name('cetak_laporan_stok');
 });
 

@@ -1,7 +1,7 @@
 @extends('dashboard_layout')
 
 @section('body_content')
-    <h2 class="text-4xl text-[#434040] font-medium">Daftar Barang Masuk</h2>
+    <h2 class="text-4xl text-[#434040] font-medium">Laporan Stok</h2>
 
     @if(session('success'))
         <div class="bg-green-500 text-white p-4 rounded-md mb-4 mt-2">
@@ -26,14 +26,16 @@
     @endif
 
     <div class="text-left mt-12">
-        <div class="flex space-x-2">
-            <input type="date" name="date" id="from-date"
+        <form action="{{ route("cetak_laporan_stok") }}" method="GET" class="flex space-x-2">
+            @csrf
+            <input type="date" name="from_date" id="from-date"
                    class="w-full border-2 border-gray-200 py-2 px-4 rounded-md mt-2" required>
-            <input type="date" name="date" id="to-date"
+            <input type="date" name="to_date" id="to-date"
                    class="w-full border-2 border-gray-200 py-2 px-4 rounded-md mt-2" required>
-            <button class="px-8 py-3 bg-[#33A8E9] text-white rounded-md" onclick="getProduct()">Cari</button>
-            <button class="px-8 py-3 bg-[#8B52D3] text-white rounded-md">Cetak</button>
-        </div>
+            <button type="button" class="px-8 py-3 bg-[#33A8E9] text-white rounded-md" onclick="getProduct()">Cari
+            </button>
+            <button type="submit" class="px-8 py-3 bg-[#8B52D3] text-white rounded-md">Cetak</button>
+        </form>
         <div class="flex items-center w-full border-2 border-gray-200 py-2 px-4 rounded-md mt-2 bg-white">
             <input type="text" id="search-bar" class="flex-grow border-none focus:outline-none" placeholder="Search...">
             <button class="ml-2 bg-[#096BA2] text-white py-2 px-4 rounded-md">
