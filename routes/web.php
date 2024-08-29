@@ -14,9 +14,8 @@ Route::get('/register', function () {
     return view('register');
 })->name('register');
 Route::post('/register', [AuthController::class, 'register']);
-
+Route::get("/logout", [AuthController::class, 'logout'])->name('logout');
 Route::middleware('auth:sanctum')->group(function () {
-    Route::get("/logout", [AuthController::class, 'logout'])->name('logout');
     Route::get('/daftar_barang', "App\Http\Controllers\ProductController@show")->name('daftar_barang');
     Route::post('/daftar_barang', "App\Http\Controllers\ProductController@create")->name('tambah_barang');
     Route::put('/daftar_barang/{id}', "App\Http\Controllers\ProductController@edit")->name('edit_barang');
