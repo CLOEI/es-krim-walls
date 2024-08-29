@@ -23,6 +23,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/daftar_barang/{id}', "App\Http\Controllers\ProductController@remove")->name('remove_barang');
 
     Route::get('/daftar_barang_keluar', "App\Http\Controllers\ProductOutController@show")->name('daftar_barang_keluar');
+    Route::post('/daftar_barang_keluar', "App\Http\Controllers\ProductOutController@create")->name('tambah_daftar_barang_keluar');
+    Route::put('/daftar_barang_keluar/{id}', "App\Http\Controllers\ProductOutController@edit")->name('edit_daftar_barang_keluar');
+    Route::delete('/daftar_barang_keluar/{id}', "App\Http\Controllers\ProductOutController@remove")->name('remove_daftar_barang_keluar');
+
     Route::get('/daftar_barang_masuk', "App\Http\Controllers\ProductInController@show")->name('daftar_barang_masuk');
 
     Route::get('/tambah_outlet', "App\Http\Controllers\StallController@show")->name('tambah_outlet');

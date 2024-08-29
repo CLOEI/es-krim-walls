@@ -20,4 +20,9 @@ class Stall extends Model
         'phone',
         'email',
     ];
+
+    public function product_out()
+    {
+        return $this->hasMany(ProductOut::class, 'stalls_id');
+    }
 }

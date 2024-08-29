@@ -2,14 +2,84 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
 use App\Models\ProductOut;
+use App\Models\Stall;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class ProductOutController extends Controller
 {
     public function show()
     {
-        $products = ProductOut::all();
-        return view('daftar_barang_keluar', compact('products'));
+        $products_out = ProductOut::all();
+        $products = Product::all();
+        $stalls = Stall::all();
+        return view('daftar_barang_keluar', compact('products', 'products_out', 'stalls'));
+    }
+
+    public function create(Request $request)
+    {
+        $request->validate([
+            'product_id' => 'required|exists:products,id',
+            'price' => 'required|numeric',
+            'stall_id' => 'required|exists:stalls,id',
+            'date' => 'required|date',
+        ]);
+
+        DB::BeginTransaction();
+        try {
+            ProductOut::create([
+                'products_id' => $request->product_id,
+                'price' => $request->price,
+                'stalls_id' => $request->stall_id,
+                'date' => $request->date,
+            ]);
+            DB::commit();
+            return redirect()->route('daftar_barang_keluar')->with('success', 'Product Out created successfully');
+        } catch (\Exception $e) {
+            Log::error('Failed to create product out: ' . $e->getMessage());
+            return redirect()->route('daftar_barang_keluar')->with('error', 'Product Out failed to create');
+        }
+    }
+
+    public function remove($id)
+    {
+        DB::BeginTransaction();
+        try {
+            ProductOut::destroy($id);
+            DB::commit();
+            return redirect()->route('daftar_barang_keluar')->with('success', 'Product Out removed successfully');
+        } catch (\Exception $e) {
+            Log::error('Failed to remove product out: ' . $e->getMessage());
+            return redirect()->route('daftar_barang_keluar')->with('error', 'Product Out failed to remove');
+        }
+    }
+
+    public function edit(Request $request, $id)
+    {
+        $request->validate([
+            'product_id' => 'required|exists:products,id',
+            'price' => 'required|numeric',
+            'stall_id' => 'required|exists:stalls,id',
+            'date' => 'required|date',
+        ]);
+
+        DB::BeginTransaction();
+        try {
+            $product_out = ProductOut::find($id);
+            $product_out->update([
+                'products_id' => $request->product_id,
+                'price' => $request->price,
+                'stalls_id' => $request->stall_id,
+                'date' => $request->date,
+            ]);
+            DB::commit();
+            return redirect()->route('daftar_barang_keluar')->with('success', 'Product Out updated successfully');
+        } catch (\Exception $e) {
+            Log::error('Failed to update product out: ' . $e->getMessage());
+            return redirect()->route('daftar_barang_keluar')->with('error', 'Product Out failed to update');
+        }
     }
 }

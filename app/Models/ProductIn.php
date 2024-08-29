@@ -19,6 +19,7 @@ class ProductIn extends Model
         'products_id',
         'quantity',
         'price',
+        'date',
     ];
 
     /**

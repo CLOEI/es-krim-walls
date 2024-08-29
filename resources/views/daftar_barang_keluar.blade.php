@@ -26,36 +26,30 @@
     @endif
 
     <div class="text-left mt-12">
-        <button id="openModalBtn" class="py-3 px-4 bg-[#096BA2] text-white rounded-md">Tambah Barang Keluar</button>
+        <button id="openTambahBarangKeluarModalBtn" class="py-3 px-4 bg-[#096BA2] text-white rounded-md">Tambah Barang Keluar</button>
         <div class="mt-4">
-            @if($products->isEmpty())
+            @if($products_out->isEmpty())
                 <p class="text-center text-gray-500">There are no products.</p>
             @else
                 <table class="min-w-full border-collapse">
                     <thead>
                     <tr class="bg-[#597697] text-white">
                         <th class="px-4 py-2 border">No</th>
-                        <th class="px-4 py-2 border">Barcode</th>
-                        <th class="px-4 py-2 border">Nama Produk</th>
+                        <th class="px-4 py-2 border">List Name Toko</th>
                         <th class="px-4 py-2 border">Tanggal</th>
-                        <th class="px-4 py-2 border">Jumlah Stok</th>
-                        <th class="px-4 py-2 border">Harga Beli</th>
-                        <th class="px-4 py-2 border">Harga Jual</th>
-                        <th class="px-4 py-2 border">Nilai Stok</th>
+                        <th class="px-4 py-2 border">Produk</th>
+                        <th class="px-4 py-2 border">Total Harga Pembelian</th>
                         <th class="px-4 py-2 border">Aksi</th>
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach($products as $index => $product)
+                    @foreach($products_out as $index => $product)
                         <tr class="{{ $index % 2 == 0 ? 'bg-[#FFFFFF00]' : 'bg-[#FFFFFF]' }}">
                             <td class="px-4 py-2 border">{{ $index + 1 }}</td>
-                            <td class="px-4 py-2 border">{{ $product->barcode }}</td>
-                            <td class="px-4 py-2 border">{{ $product->name }}</td>
-                            <td class="px-4 py-2 border">{{ $product->created_at->format('Y-m-d') }}</td>
-                            <td class="px-4 py-2 border">{{ $product->stock->quantity }}</td>
-                            <td class="px-4 py-2 border">{{ $product->price->purchase_price }}</td>
-                            <td class="px-4 py-2 border">{{ $product->price->selling_price }}</td>
-                            <td class="px-4 py-2 border">{{ $product->stock->quantity * $product->price->purchase_price }}</td>
+                            <td class="px-4 py-2 border">{{ $product->stall->name }}</td>
+                            <td class="px-4 py-2 border">{{ $product->date }}</td>
+                            <td class="px-4 py-2 border">{{ $product->product->name }}</td>
+                            <td class="px-4 py-2 border">Rp {{ $product->price }}</td>
                             <td class="px-4 py-2 border space-x-1">
                                 <button class="bg-[#27B847] px-3.5 py-1.5 rounded-sm text-white" onclick="openEditModal({{ $product }})">Edit</button>
                                 <button class="bg-[#EB4335] px-3.5 py-1.5 rounded-sm text-white" onclick="openDeleteModal({{ $product->id }})">Delete</button>
@@ -68,34 +62,40 @@
         </div>
     </div>
 
-    <!-- Add Product Modal -->
-    <div id="addProductModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
+    <!-- Add Product Out Modal -->
+    <div id="tambahBarangKeluarModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
         <div class="bg-white p-6 rounded-md shadow-md w-1/3">
-            <h2 class="text-2xl mb-4">Tambah Produk Baru</h2>
-            <form action="{{ route('tambah_barang') }}" method="POST">
+            <h2 class="text-2xl mb-4">Tambah Barang Keluar</h2>
+            <form action="/daftar_barang_keluar" method="POST">
                 @csrf
                 <div class="mb-4">
-                    <label for="barcode" class="block text-sm font-medium text-gray-700">Barcode</label>
-                    <input type="text" name="barcode" id="barcode" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                    <label for="stall_id" class="block text-sm font-medium text-gray-700">Search Nama Toko</label>
+                    <select id="stall_id" name="stall_id" class="w-full border-2 border-gray-200 py-2 px-4 rounded-md mt-2" placeholder="Search for stall..." required>
+                        <option value="">Select a stall...</option>
+                        @foreach($stalls as $stall)
+                            <option value="{{ $stall->id }}">{{ $stall->name }}</option>
+                        @endforeach
+                    </select>
                 </div>
                 <div class="mb-4">
-                    <label for="name" class="block text-sm font-medium text-gray-700">Nama Produk</label>
-                    <input type="text" name="name" id="name" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                    <label for="date" class="block text-sm font-medium text-gray-700">Date</label>
+                    <input type="date" name="date" id="date" class="w-full border-2 border-gray-200 py-2 px-4 rounded-md mt-2" required>
                 </div>
                 <div class="mb-4">
-                    <label for="stock_quantity" class="block text-sm font-medium text-gray-700">Jumlah Stok</label>
-                    <input type="number" name="stock_quantity" id="stock_quantity" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                    <label for="product_id" class="block text-sm font-medium text-gray-700">Produk Dibeli</label>
+                    <select id="product_id" name="product_id" class="w-full border-2 border-gray-200 py-2 px-4 rounded-md mt-2" placeholder="Search for stall..." required>
+                        <option value="">Select a product...</option>
+                        @foreach($products as $product)
+                            <option value="{{ $product->id }}">{{ $product->name }}</option>
+                        @endforeach
+                    </select>
                 </div>
                 <div class="mb-4">
-                    <label for="purchase_price" class="block text-sm font-medium text-gray-700">Harga Beli</label>
-                    <input type="number" name="purchase_price" id="purchase_price" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
-                </div>
-                <div class="mb-4">
-                    <label for="selling_price" class="block text-sm font-medium text-gray-700">Harga Jual</label>
-                    <input type="number" name="selling_price" id="selling_price" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                    <label for="price" class="block text-sm font-medium text-gray-700">Total Harga Pembelian</label>
+                    <input type="number" name="price" id="price" class="w-full border-2 border-gray-200 py-2 px-4 rounded-md mt-2" required>
                 </div>
                 <div class="flex justify-end">
-                    <button type="button" id="closeModalBtn" class="py-2 px-4 bg-gray-500 text-white rounded-md mr-2">Cancel</button>
+                    <button type="button" id="closeTambahBarangKeluarModalBtn" class="py-2 px-4 bg-gray-500 text-white rounded-md mr-2">Cancel</button>
                     <button type="submit" class="py-2 px-4 bg-blue-600 text-white rounded-md">Save</button>
                 </div>
             </form>
@@ -110,27 +110,35 @@
                 @csrf
                 @method('PUT')
                 <div class="mb-4">
-                    <label for="edit_barcode" class="block text-sm font-medium text-gray-700">Barcode</label>
-                    <input type="text" name="barcode" id="edit_barcode" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                    <label for="stall_id" class="block text-sm font-medium text-gray-700">Search Nama Toko</label>
+                    <select id="stall_id" name="stall_id" class="w-full border-2 border-gray-200 py-2 px-4 rounded-md mt-2" placeholder="Search for stall..." required>
+                        <option value="">Select a stall...</option>
+                        @foreach($stalls as $stall)
+                            <option value="{{ $stall->id }}">{{ $stall->name }}</option>
+                        @endforeach
+                    </select>
                 </div>
                 <div class="mb-4">
-                    <label for="edit_name" class="block text-sm font-medium text-gray-700">Nama Produk</label>
-                    <input type="text" name="name" id="edit_name" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                    <label for="date" class="block text-sm font-medium text-gray-700">Date</label>
+                    <input type="date" name="date" id="date" class="w-full border-2 border-gray-200 py-2 px-4 rounded-md mt-2" required>
                 </div>
                 <div class="mb-4">
-                    <label for="edit_stock_quantity" class="block text-sm font-medium text-gray-700">Jumlah Stok</label>
-                    <input type="number" name="stock_quantity" id="edit_stock_quantity" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                    <label for="product_id" class="block text-sm font-medium text-gray-700">Produk Dibeli</label>
+                    <select id="product_id" name="product_id" class="w-full border-2 border-gray-200 py-2 px-4 rounded-md mt-2" placeholder="Search for stall..." required>
+                        <option value="">Select a product...</option>
+                        @foreach($products as $product)
+                            <option value="{{ $product->id }}">{{ $product->name }}</option>
+                        @endforeach
+                    </select>
                 </div>
                 <div class="mb-4">
-                    <label for="edit_purchase_price" class="block text-sm font-medium text-gray-700">Harga Beli</label>
-                    <input type="number" name="purchase_price" id="edit_purchase_price" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
-                </div>
-                <div class="mb-4">
-                    <label for="edit_selling_price" class="block text-sm font-medium text-gray-700">Harga Jual</label>
-                    <input type="number" name="selling_price" id="edit_selling_price" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                    <label for="price" class="block text-sm font-medium text-gray-700">Total Harga Pembelian</label>
+                    <input type="number" name="price" id="price" class="w-full border-2 border-gray-200 py-2 px-4 rounded-md mt-2" required>
                 </div>
                 <div class="flex justify-end">
-                    <button type="button" id="closeEditModalBtn" class="py-2 px-4 bg-gray-500 text-white rounded-md mr-2">Cancel</button>
+                    <button type="button" id="closeEditModalBtn"
+                            class="py-2 px-4 bg-gray-500 text-white rounded-md mr-2">Cancel
+                    </button>
                     <button type="submit" class="py-2 px-4 bg-blue-600 text-white rounded-md">Save</button>
                 </div>
             </form>
@@ -138,7 +146,8 @@
     </div>
 
     <!-- Delete Confirmation Modal -->
-    <div id="deleteProductModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
+    <div id="deleteProductModal"
+         class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
         <div class="bg-white p-6 rounded-md shadow-md w-1/3">
             <h2 class="text-2xl mb-4">Hapus Produk</h2>
             <p>Apakah Anda yakin ingin menghapus produk ini?</p>
@@ -146,7 +155,9 @@
                 @csrf
                 @method('DELETE')
                 <div class="flex justify-end mt-4">
-                    <button type="button" id="closeDeleteModalBtn" class="py-2 px-4 bg-gray-500 text-white rounded-md mr-2">Cancel</button>
+                    <button type="button" id="closeDeleteModalBtn"
+                            class="py-2 px-4 bg-gray-500 text-white rounded-md mr-2">Cancel
+                    </button>
                     <button type="submit" class="py-2 px-4 bg-red-600 text-white rounded-md">Delete</button>
                 </div>
             </form>
@@ -154,34 +165,47 @@
     </div>
 
     <script>
-        document.getElementById('openModalBtn').addEventListener('click', function() {
-            document.getElementById('addProductModal').classList.remove('hidden');
+        document.getElementById('openTambahBarangKeluarModalBtn').addEventListener('click', function() {
+            document.getElementById('tambahBarangKeluarModal').classList.remove('hidden');
         });
 
-        document.getElementById('closeModalBtn').addEventListener('click', function() {
-            document.getElementById('addProductModal').classList.add('hidden');
+        document.getElementById('closeTambahBarangKeluarModalBtn').addEventListener('click', function() {
+            document.getElementById('tambahBarangKeluarModal').classList.add('hidden');
         });
 
-        document.getElementById('closeEditModalBtn').addEventListener('click', function() {
+        document.getElementById('stall_id').addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            const options = this.querySelectorAll('option');
+
+            options.forEach(option => {
+                const stallName = option.textContent.toLowerCase();
+                if (stallName.includes(searchTerm)) {
+                    option.style.display = '';
+                } else {
+                    option.style.display = 'none';
+                }
+            });
+        });
+
+        document.getElementById('closeEditModalBtn').addEventListener('click', function () {
             document.getElementById('editProductModal').classList.add('hidden');
         });
 
-        document.getElementById('closeDeleteModalBtn').addEventListener('click', function() {
+        document.getElementById('closeDeleteModalBtn').addEventListener('click', function () {
             document.getElementById('deleteProductModal').classList.add('hidden');
         });
 
         function openEditModal(product) {
-            document.getElementById('edit_barcode').value = product.barcode;
-            document.getElementById('edit_name').value = product.name;
-            document.getElementById('edit_stock_quantity').value = product.stock.quantity;
-            document.getElementById('edit_purchase_price').value = product.price.purchase_price;
-            document.getElementById('edit_selling_price').value = product.price.selling_price;
-            document.getElementById('editProductForm').action = `/barang/${product.id}`;
-            document.getElementById('editProductModal').classList.remove('hidden');
+            document.getElementById('editProductForm').action = `/daftar_barang_keluar/${product.id}`;
+            document.querySelector('#editProductForm #stall_id').value = product.stalls_id;
+            document.querySelector('#editProductForm #date').value = product.date;
+            document.querySelector('#editProductForm #product_id').value = product.products_id;
+            document.querySelector('#editProductForm #price').value = product.price;
+            document.querySelector('#editProductModal').classList.remove('hidden');
         }
 
         function openDeleteModal(productId) {
-            document.getElementById('deleteProductForm').action = `/barang/${productId}`;
+            document.getElementById('deleteProductForm').action = `/daftar_barang_keluar/${productId}`;
             document.getElementById('deleteProductModal').classList.remove('hidden');
         }
     </script>

@@ -26,7 +26,16 @@
     @endif
 
     <div class="text-left mt-12">
-        <button id="openModalBtn" class="py-3 px-4 bg-[#096BA2] text-white rounded-md">Tambah Barang</button>
+        <div class="flex items-center w-full border-2 border-gray-200 py-2 px-4 rounded-md mt-2 bg-white">
+            <input type="text" id="search-bar" class="flex-grow border-none focus:outline-none" placeholder="Search...">
+            <button class="ml-2 bg-[#096BA2] text-white py-2 px-4 rounded-md">
+                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 15 15" fill="none">
+                    <path fill-rule="evenodd" clip-rule="evenodd"
+                          d="M10.2369 10.8405C9.33019 11.5456 8.19077 11.9655 6.9533 11.9655C3.996 11.9655 1.59863 9.56747 1.59863 6.60934C1.59863 3.65121 3.996 1.25317 6.9533 1.25317C9.91061 1.25317 12.308 3.65121 12.308 6.60934C12.308 7.84703 11.8883 8.98668 11.1835 9.89364L13.8931 12.6007C14.1546 12.862 14.1549 13.2859 13.8936 13.5475C13.6324 13.8092 13.2086 13.8094 12.947 13.5481L10.2369 10.8405ZM10.9693 6.60934C10.9693 8.82794 9.17128 10.6265 6.9533 10.6265C4.73533 10.6265 2.9373 8.82794 2.9373 6.60934C2.9373 4.39074 4.73533 2.59222 6.9533 2.59222C9.17128 2.59222 10.9693 4.39074 10.9693 6.60934Z"
+                          fill="#FFFFFF"/>
+                </svg>
+            </button>
+        </div>
         <div class="mt-4">
             @if($products->isEmpty())
                 <p class="text-center text-gray-500">There are no products.</p>
@@ -55,50 +64,21 @@
                             <td class="px-4 py-2 border">{{ $product->stock->quantity }}</td>
                             <td class="px-4 py-2 border">Rp.{{ $product->price->purchase_price }}</td>
                             <td class="px-4 py-2 border">Rp.{{ $product->price->selling_price }}</td>
-                            <td class="px-4 py-2 border">Rp.{{ $product->stock->quantity * $product->price->purchase_price }}</td>
+                            <td class="px-4 py-2 border">
+                                Rp.{{ $product->stock->quantity * $product->price->purchase_price }}</td>
                             <td class="px-4 py-2 border space-x-1 flex">
-                                <button class="bg-[#27B847] px-3.5 py-1.5 rounded-sm text-white" onclick="openEditModal({{ $product }})">Edit</button>
-                                <button class="bg-[#EB4335] px-3.5 py-1.5 rounded-sm text-white" onclick="openDeleteModal({{ $product->id }})">Delete</button>
+                                <button class="bg-[#27B847] px-3.5 py-1.5 rounded-sm text-white"
+                                        onclick="openEditModal({{ $product }})">Edit
+                                </button>
+                                <button class="bg-[#EB4335] px-3.5 py-1.5 rounded-sm text-white"
+                                        onclick="openDeleteModal({{ $product->id }})">Delete
+                                </button>
                             </td>
                         </tr>
                     @endforeach
                     </tbody>
                 </table>
             @endif
-        </div>
-    </div>
-
-    <!-- Add Product Modal -->
-    <div id="addProductModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
-        <div class="bg-white p-6 rounded-md shadow-md w-1/3">
-            <h2 class="text-2xl mb-4">Tambah Produk Baru</h2>
-            <form action="{{ route('tambah_barang') }}" method="POST">
-                @csrf
-                <div class="mb-4">
-                    <label for="barcode" class="block text-sm font-medium text-gray-700">Barcode</label>
-                    <input type="text" name="barcode" id="barcode" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
-                </div>
-                <div class="mb-4">
-                    <label for="name" class="block text-sm font-medium text-gray-700">Nama Produk</label>
-                    <input type="text" name="name" id="name" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
-                </div>
-                <div class="mb-4">
-                    <label for="stock_quantity" class="block text-sm font-medium text-gray-700">Jumlah Stok</label>
-                    <input type="number" name="stock_quantity" id="stock_quantity" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
-                </div>
-                <div class="mb-4">
-                    <label for="purchase_price" class="block text-sm font-medium text-gray-700">Harga Beli</label>
-                    <input type="number" name="purchase_price" id="purchase_price" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
-                </div>
-                <div class="mb-4">
-                    <label for="selling_price" class="block text-sm font-medium text-gray-700">Harga Jual</label>
-                    <input type="number" name="selling_price" id="selling_price" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
-                </div>
-                <div class="flex justify-end">
-                    <button type="button" id="closeModalBtn" class="py-2 px-4 bg-gray-500 text-white rounded-md mr-2">Cancel</button>
-                    <button type="submit" class="py-2 px-4 bg-blue-600 text-white rounded-md">Save</button>
-                </div>
-            </form>
         </div>
     </div>
 
@@ -111,26 +91,33 @@
                 @method('PUT')
                 <div class="mb-4">
                     <label for="edit_barcode" class="block text-sm font-medium text-gray-700">Barcode</label>
-                    <input type="text" name="barcode" id="edit_barcode" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                    <input type="text" name="barcode" id="edit_barcode"
+                           class="w-full border-2 border-gray-200 py-2 px-4 rounded-md mt-2">
                 </div>
                 <div class="mb-4">
                     <label for="edit_name" class="block text-sm font-medium text-gray-700">Nama Produk</label>
-                    <input type="text" name="name" id="edit_name" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                    <input type="text" name="name" id="edit_name"
+                           class="w-full border-2 border-gray-200 py-2 px-4 rounded-md mt-2">
                 </div>
                 <div class="mb-4">
                     <label for="edit_stock_quantity" class="block text-sm font-medium text-gray-700">Jumlah Stok</label>
-                    <input type="number" name="stock_quantity" id="edit_stock_quantity" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                    <input type="number" name="stock_quantity" id="edit_stock_quantity"
+                           class="w-full border-2 border-gray-200 py-2 px-4 rounded-md mt-2">
                 </div>
                 <div class="mb-4">
                     <label for="edit_purchase_price" class="block text-sm font-medium text-gray-700">Harga Beli</label>
-                    <input type="number" name="purchase_price" id="edit_purchase_price" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                    <input type="number" name="purchase_price" id="edit_purchase_price"
+                           class="w-full border-2 border-gray-200 py-2 px-4 rounded-md mt-2">
                 </div>
                 <div class="mb-4">
                     <label for="edit_selling_price" class="block text-sm font-medium text-gray-700">Harga Jual</label>
-                    <input type="number" name="selling_price" id="edit_selling_price" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                    <input type="number" name="selling_price" id="edit_selling_price"
+                           class="w-full border-2 border-gray-200 py-2 px-4 rounded-md mt-2">
                 </div>
                 <div class="flex justify-end">
-                    <button type="button" id="closeEditModalBtn" class="py-2 px-4 bg-gray-500 text-white rounded-md mr-2">Cancel</button>
+                    <button type="button" id="closeEditModalBtn"
+                            class="py-2 px-4 bg-gray-500 text-white rounded-md mr-2">Cancel
+                    </button>
                     <button type="submit" class="py-2 px-4 bg-blue-600 text-white rounded-md">Save</button>
                 </div>
             </form>
@@ -138,7 +125,8 @@
     </div>
 
     <!-- Delete Confirmation Modal -->
-    <div id="deleteProductModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
+    <div id="deleteProductModal"
+         class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
         <div class="bg-white p-6 rounded-md shadow-md w-1/3">
             <h2 class="text-2xl mb-4">Hapus Produk</h2>
             <p>Apakah Anda yakin ingin menghapus produk ini?</p>
@@ -146,7 +134,9 @@
                 @csrf
                 @method('DELETE')
                 <div class="flex justify-end mt-4">
-                    <button type="button" id="closeDeleteModalBtn" class="py-2 px-4 bg-gray-500 text-white rounded-md mr-2">Cancel</button>
+                    <button type="button" id="closeDeleteModalBtn"
+                            class="py-2 px-4 bg-gray-500 text-white rounded-md mr-2">Cancel
+                    </button>
                     <button type="submit" class="py-2 px-4 bg-red-600 text-white rounded-md">Delete</button>
                 </div>
             </form>
@@ -154,19 +144,27 @@
     </div>
 
     <script>
-        document.getElementById('openModalBtn').addEventListener('click', function() {
-            document.getElementById('addProductModal').classList.remove('hidden');
+        const searchInput = document.querySelector('#search-bar');
+        const productRows = document.querySelectorAll('tbody tr');
+
+        searchInput.addEventListener('input', function () {
+            const searchTerm = searchInput.value.toLowerCase();
+
+            productRows.forEach(row => {
+                const productName = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
+                if (productName.includes(searchTerm)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
         });
 
-        document.getElementById('closeModalBtn').addEventListener('click', function() {
-            document.getElementById('addProductModal').classList.add('hidden');
-        });
-
-        document.getElementById('closeEditModalBtn').addEventListener('click', function() {
+        document.getElementById('closeEditModalBtn').addEventListener('click', function () {
             document.getElementById('editProductModal').classList.add('hidden');
         });
 
-        document.getElementById('closeDeleteModalBtn').addEventListener('click', function() {
+        document.getElementById('closeDeleteModalBtn').addEventListener('click', function () {
             document.getElementById('deleteProductModal').classList.add('hidden');
         });
 

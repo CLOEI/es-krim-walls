@@ -18,6 +18,7 @@ class ProductOut extends Model
         'stalls_id',
         'products_id',
         'price',
+        'date',
     ];
 
     /**
