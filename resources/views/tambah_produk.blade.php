@@ -30,8 +30,8 @@
             @csrf
             <div>
                 <p>Barcode</p>
-                <input type="text" readonly name="barcode" class="w-full border-2 border-gray-200 py-2 px-4 rounded-md mt-2 opacity-50"
-                       value="{{ \Illuminate\Support\Str::uuid()->toString() }}">
+                <input type="text" maxlength="8" name="barcode" class="w-full border-2 border-gray-200 py-2 px-4 rounded-md mt-2"
+                       value="{{ old('barcode') }}">
             </div>
             <div>
                 <p>Nama Produk</p>

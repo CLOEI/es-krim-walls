@@ -38,5 +38,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/tambah_produk', "App\Http\Controllers\ProductController@add_show")->name('tambah_produk');
     Route::post('/tambah_produk', "App\Http\Controllers\ProductController@create")->name('tambah_produk');
+
+    Route::get('/laporan_stok', "App\Http\Controllers\StockReportController@show")->name('laporan_stok');
 });
 
