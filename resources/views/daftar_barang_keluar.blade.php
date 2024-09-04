@@ -51,8 +51,14 @@
                             <td class="px-4 py-2 border">{{ $product->product->name }}</td>
                             <td class="px-4 py-2 border">Rp {{ $product->price }}</td>
                             <td class="px-4 py-2 border space-x-1">
-                                <button class="bg-[#27B847] px-3.5 py-1.5 rounded-sm text-white" onclick="openEditModal({{ $product }})">Edit</button>
-                                <button class="bg-[#EB4335] px-3.5 py-1.5 rounded-sm text-white" onclick="openDeleteModal({{ $product->id }})">Delete</button>
+                                @if(auth()->user()->role == "manager")
+                                    <button class="bg-[#27B847] px-3.5 py-1.5 rounded-sm text-white"
+                                            onclick="openEditModal({{ $product }})">Edit
+                                    </button>
+                                    <button class="bg-[#EB4335] px-3.5 py-1.5 rounded-sm text-white"
+                                            onclick="openDeleteModal({{ $product->id }})">Delete
+                                    </button>
+                                @endif
                             </td>
                         </tr>
                     @endforeach
