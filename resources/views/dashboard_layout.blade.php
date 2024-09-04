@@ -175,7 +175,7 @@
         <div class="w-full flex flex-col overflow-y-auto">
             <div class="h-20 flex-shrink-0 bg-[#138FA0] flex items-center justify-end px-10">
                 <div class="flex space-x-2 items-center">
-                    <img src="{{"https://api.dicebear.com/9.x/Lorelei/svg?seed=". auth()->user()->first_name . auth()->user()->last_name}}" class="w-12 h-12" alt="profile">
+                    <img src="{{"https://api.dicebear.com/9.x/lorelei/svg?seed=". auth()->user()->first_name . auth()->user()->last_name}}" class="w-12 h-12" alt="profile">
                     <p>{{ auth()->user()->first_name }}</p>
                 </div>
             </div>
