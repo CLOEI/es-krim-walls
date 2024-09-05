@@ -26,7 +26,9 @@
     @endif
 
     <div class="text-left mt-12">
-        <button id="openTambahBarangKeluarModalBtn" class="py-3 px-4 bg-[#096BA2] text-white rounded-md">Tambah Barang Masuk</button>
+        <button id="openTambahBarangKeluarModalBtn" class="py-3 px-4 bg-[#096BA2] text-white rounded-md">Tambah Barang
+            Masuk
+        </button>
         <div class="mt-4">
             @if($products_in->isEmpty())
                 <p class="text-center text-gray-500">There are no products.</p>
@@ -40,7 +42,9 @@
                         <th class="px-4 py-2 border">Tanggal</th>
                         <th class="px-4 py-2 border">Jumlah</th>
                         <th class="px-4 py-2 border">Total Harga Pembelian</th>
-                        <th class="px-4 py-2 border">Aksi</th>
+                        @if(auth()->user()->role == "manager")
+                            <th class="px-4 py-2 border">Aksi</th>
+                        @endif
                     </tr>
                     </thead>
                     <tbody>
@@ -51,17 +55,18 @@
                             <td class="px-4 py-2 border">{{ $product->product->name }}</td>
                             <td class="px-4 py-2 border">{{ $product->date }}</td>
                             <td class="px-4 py-2 border">{{ $product->quantity }}</td>
-                            <td class="px-4 py-2 border">Rp {{ $product->quantity * $product->product->price->purchase_price }}</td>
-                            <td class="px-4 py-2 border space-x-1 flex">
-                                @if(auth()->user()->role == "manager")
+                            <td class="px-4 py-2 border">
+                                Rp {{ $product->quantity * $product->product->price->purchase_price }}</td>
+                            @if(auth()->user()->role == "manager")
+                                <td class="px-4 py-2 border space-x-1 flex">
                                     <button class="bg-[#27B847] px-3.5 py-1.5 rounded-sm text-white"
                                             onclick="openEditModal({{ $product }})">Edit
                                     </button>
                                     <button class="bg-[#EB4335] px-3.5 py-1.5 rounded-sm text-white"
                                             onclick="openDeleteModal({{ $product->id }})">Delete
                                     </button>
-                                @endif
-                            </td>
+                                </td>
+                            @endif
                         </tr>
                     @endforeach
                     </tbody>
@@ -71,14 +76,17 @@
     </div>
 
     <!-- Add Product Out Modal -->
-    <div id="tambahBarangKeluarModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
+    <div id="tambahBarangKeluarModal"
+         class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
         <div class="bg-white p-6 rounded-md shadow-md w-1/3">
             <h2 class="text-2xl mb-4">Tambah Barang Masuk</h2>
             <form action="/daftar_barang_masuk" method="POST">
                 @csrf
                 <div class="mb-4">
                     <label for="product_id" class="block text-sm font-medium text-gray-700">Nama Barang</label>
-                    <select id="product_id" name="product_id" class="w-full border-2 border-gray-200 py-2 px-4 rounded-md mt-2" placeholder="Search for stall..." required>
+                    <select id="product_id" name="product_id"
+                            class="w-full border-2 border-gray-200 py-2 px-4 rounded-md mt-2"
+                            placeholder="Search for stall..." required>
                         <option value="">Select a product...</option>
                         @foreach($products as $product)
                             <option value="{{ $product->id }}">{{ $product->name }}</option>
@@ -87,14 +95,18 @@
                 </div>
                 <div class="mb-4">
                     <label for="quantity" class="block text-sm font-medium text-gray-700">Jumlah</label>
-                    <input type="number" name="quantity" id="quantity" class="w-full border-2 border-gray-200 py-2 px-4 rounded-md mt-2" required>
+                    <input type="number" name="quantity" id="quantity"
+                           class="w-full border-2 border-gray-200 py-2 px-4 rounded-md mt-2" required>
                 </div>
                 <div class="mb-4">
                     <label for="date" class="block text-sm font-medium text-gray-700">Tanggal</label>
-                    <input type="date" name="date" id="date" class="w-full border-2 border-gray-200 py-2 px-4 rounded-md mt-2" required>
+                    <input type="date" name="date" id="date"
+                           class="w-full border-2 border-gray-200 py-2 px-4 rounded-md mt-2" required>
                 </div>
                 <div class="flex justify-end">
-                    <button type="button" id="closeTambahBarangKeluarModalBtn" class="py-2 px-4 bg-gray-500 text-white rounded-md mr-2">Cancel</button>
+                    <button type="button" id="closeTambahBarangKeluarModalBtn"
+                            class="py-2 px-4 bg-gray-500 text-white rounded-md mr-2">Cancel
+                    </button>
                     <button type="submit" class="py-2 px-4 bg-blue-600 text-white rounded-md">Save</button>
                 </div>
             </form>
@@ -110,7 +122,9 @@
                 @method('PUT')
                 <div class="mb-4">
                     <label for="product_id" class="block text-sm font-medium text-gray-700">Nama Barang</label>
-                    <select id="product_id" name="product_id" class="w-full border-2 border-gray-200 py-2 px-4 rounded-md mt-2" placeholder="Search for stall..." required>
+                    <select id="product_id" name="product_id"
+                            class="w-full border-2 border-gray-200 py-2 px-4 rounded-md mt-2"
+                            placeholder="Search for stall..." required>
                         <option value="">Select a product...</option>
                         @foreach($products as $product)
                             <option value="{{ $product->id }}">{{ $product->name }}</option>
@@ -119,11 +133,13 @@
                 </div>
                 <div class="mb-4">
                     <label for="quantity" class="block text-sm font-medium text-gray-700">Jumlah</label>
-                    <input type="number" name="quantity" id="quantity" class="w-full border-2 border-gray-200 py-2 px-4 rounded-md mt-2" required>
+                    <input type="number" name="quantity" id="quantity"
+                           class="w-full border-2 border-gray-200 py-2 px-4 rounded-md mt-2" required>
                 </div>
                 <div class="mb-4">
                     <label for="date" class="block text-sm font-medium text-gray-700">Tanggal</label>
-                    <input type="date" name="date" id="date" class="w-full border-2 border-gray-200 py-2 px-4 rounded-md mt-2" required>
+                    <input type="date" name="date" id="date"
+                           class="w-full border-2 border-gray-200 py-2 px-4 rounded-md mt-2" required>
                 </div>
                 <div class="flex justify-end">
                     <button type="button" id="closeEditModalBtn"
@@ -155,11 +171,11 @@
     </div>
 
     <script>
-        document.getElementById('openTambahBarangKeluarModalBtn').addEventListener('click', function() {
+        document.getElementById('openTambahBarangKeluarModalBtn').addEventListener('click', function () {
             document.getElementById('tambahBarangKeluarModal').classList.remove('hidden');
         });
 
-        document.getElementById('closeTambahBarangKeluarModalBtn').addEventListener('click', function() {
+        document.getElementById('closeTambahBarangKeluarModalBtn').addEventListener('click', function () {
             document.getElementById('tambahBarangKeluarModal').classList.add('hidden');
         });
 

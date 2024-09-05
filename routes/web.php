@@ -21,6 +21,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/daftar_barang', "App\Http\Controllers\ProductController@show")->name('daftar_barang');
     Route::post('/daftar_barang', "App\Http\Controllers\ProductController@create")->name('tambah_barang');
 
+    Route::get('/daftar_outlet', "App\Http\Controllers\StallController@show_list")->name('daftar_outlet');
+    Route::put('/daftar_outlet/{id}', "App\Http\Controllers\StallController@edit")->name('tambah_outlet');
+    Route::delete('/daftar_outlet/{id}', "App\Http\Controllers\StallController@remove")->name('remove_outlet');
+
     Route::get('/daftar_barang_keluar', "App\Http\Controllers\ProductOutController@show")->name('daftar_barang_keluar');
     Route::post('/daftar_barang_keluar', "App\Http\Controllers\ProductOutController@create")->name('tambah_daftar_barang_keluar');
 
@@ -47,9 +51,9 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 Route::middleware(['auth:sanctum', CheckManagerRole::class])->group(function() {
-    route::get('/admin', (function() {
-        return view('admin');
-    }))->name('admin');
+    route::get('/admin', "App\Http\Controllers\AdminController@show")->name('admin');
+    route::post('/admin', "App\Http\Controllers\AdminController@register")->name('tambah_admin');
+    route::delete('/admin/{id}', "App\Http\Controllers\AdminController@remove")->name('remove_admin');
     Route::put('/daftar_barang/{id}', "App\Http\Controllers\ProductController@edit")->name('edit_barang');
     Route::delete('/daftar_barang/{id}', "App\Http\Controllers\ProductController@remove")->name('remove_barang');
 

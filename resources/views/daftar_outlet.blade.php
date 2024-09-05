@@ -1,7 +1,7 @@
 @extends('dashboard_layout')
 
 @section('body_content')
-    <h2 class="text-4xl text-[#434040] font-medium">Daftar Barang</h2>
+    <h2 class="text-4xl text-[#434040] font-medium">Daftar Outlet</h2>
 
     @if(session('success'))
         <div class="bg-green-500 text-white p-4 rounded-md mb-4 mt-2">
@@ -37,44 +37,37 @@
             </button>
         </div>
         <div class="mt-4">
-            @if($products->isEmpty())
-                <p class="text-center text-gray-500">There are no products.</p>
+            @if($stalls->isEmpty())
+                <p class="text-center text-gray-500">There are no stall.</p>
             @else
                 <table class="min-w-full border-collapse">
                     <thead>
                     <tr class="bg-[#597697] text-white">
                         <th class="px-4 py-2 border">No</th>
-                        <th class="px-4 py-2 border">Barcode</th>
-                        <th class="px-4 py-2 border">Nama Produk</th>
-                        <th class="px-4 py-2 border">Tanggal</th>
-                        <th class="px-4 py-2 border">Jumlah Stok</th>
-                        <th class="px-4 py-2 border">Harga Beli</th>
-                        <th class="px-4 py-2 border">Harga Jual</th>
-                        <th class="px-4 py-2 border">Nilai Stok</th>
+                        <th class="px-4 py-2 border">Nama</th>
+                        <th class="px-4 py-2 border">Alamat</th>
+                        <th class="px-4 py-2 border">No. handphone</th>
+                        <th class="px-4 py-2 border">Email</th>
                         @if(auth()->user()->role == "manager")
                             <th class="px-4 py-2 border">Aksi</th>
                         @endif
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach($products as $index => $product)
+                    @foreach($stalls as $index => $stall)
                         <tr class="{{ $index % 2 == 0 ? 'bg-[#FFFFFF00]' : 'bg-[#FFFFFF]' }}">
                             <td class="px-4 py-2 border">{{ $index + 1 }}</td>
-                            <td class="px-4 py-2 border">{{ $product->barcode }}</td>
-                            <td class="px-4 py-2 border">{{ $product->name }}</td>
-                            <td class="px-4 py-2 border">{{ $product->created_at->format('Y-m-d') }}</td>
-                            <td class="px-4 py-2 border">{{ $product->stock->quantity }}</td>
-                            <td class="px-4 py-2 border">Rp {{ $product->price->purchase_price }}</td>
-                            <td class="px-4 py-2 border">Rp {{ $product->price->selling_price }}</td>
-                            <td class="px-4 py-2 border">
-                                Rp.{{ $product->stock->quantity * $product->price->purchase_price }}</td>
+                            <td class="px-4 py-2 border">{{ $stall->name }}</td>
+                            <td class="px-4 py-2 border">{{ $stall->address }}</td>
+                            <td class="px-4 py-2 border">{{ $stall->phone }}</td>
+                            <td class="px-4 py-2 border">{{ $stall->email }}</td>
                             @if(auth()->user()->role == "manager")
                                 <td class="px-4 py-2 border space-x-1 flex">
                                     <button class="bg-[#27B847] px-3.5 py-1.5 rounded-sm text-white"
-                                            onclick="openEditModal({{ $product }})">Edit
+                                            onclick="openEditModal({{ $stall }})">Edit
                                     </button>
                                     <button class="bg-[#EB4335] px-3.5 py-1.5 rounded-sm text-white"
-                                            onclick="openDeleteModal({{ $product->id }})">Delete
+                                            onclick="openDeleteModal({{ $stall->id }})">Delete
                                     </button>
                                 </td>
                             @endif
@@ -86,36 +79,31 @@
         </div>
     </div>
 
-    <!-- Edit Product Modal -->
+    <!-- Edit Stall Modal -->
     <div id="editProductModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
         <div class="bg-white p-6 rounded-md shadow-md w-1/3">
-            <h2 class="text-2xl mb-4">Edit Produk</h2>
+            <h2 class="text-2xl mb-4">Edit Outlet</h2>
             <form id="editProductForm" method="POST">
                 @csrf
                 @method('PUT')
                 <div class="mb-4">
-                    <label for="edit_barcode" class="block text-sm font-medium text-gray-700">Barcode</label>
-                    <input type="text" name="barcode" id="edit_barcode"
-                           class="w-full border-2 border-gray-200 py-2 px-4 rounded-md mt-2">
-                </div>
-                <div class="mb-4">
-                    <label for="edit_name" class="block text-sm font-medium text-gray-700">Nama Produk</label>
+                    <label for="edit_name" class="block text-sm font-medium text-gray-700">Nama</label>
                     <input type="text" name="name" id="edit_name"
                            class="w-full border-2 border-gray-200 py-2 px-4 rounded-md mt-2">
                 </div>
                 <div class="mb-4">
-                    <label for="edit_stock_quantity" class="block text-sm font-medium text-gray-700">Jumlah Stok</label>
-                    <input type="number" name="stock_quantity" id="edit_stock_quantity"
+                    <label for="edit_address" class="block text-sm font-medium text-gray-700">Alamat</label>
+                    <input type="text" name="address" id="edit_address"
                            class="w-full border-2 border-gray-200 py-2 px-4 rounded-md mt-2">
                 </div>
                 <div class="mb-4">
-                    <label for="edit_purchase_price" class="block text-sm font-medium text-gray-700">Harga Beli</label>
-                    <input type="number" name="purchase_price" id="edit_purchase_price"
+                    <label for="edit_phone" class="block text-sm font-medium text-gray-700">No. handphone</label>
+                    <input type="number" name="phone" id="edit_phone"
                            class="w-full border-2 border-gray-200 py-2 px-4 rounded-md mt-2">
                 </div>
                 <div class="mb-4">
-                    <label for="edit_selling_price" class="block text-sm font-medium text-gray-700">Harga Jual</label>
-                    <input type="number" name="selling_price" id="edit_selling_price"
+                    <label for="edit_email" class="block text-sm font-medium text-gray-700">HEmail</label>
+                    <input type="email" name="email" id="edit_email"
                            class="w-full border-2 border-gray-200 py-2 px-4 rounded-md mt-2">
                 </div>
                 <div class="flex justify-end">
@@ -132,8 +120,8 @@
     <div id="deleteProductModal"
          class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
         <div class="bg-white p-6 rounded-md shadow-md w-1/3">
-            <h2 class="text-2xl mb-4">Hapus Produk</h2>
-            <p>Apakah Anda yakin ingin menghapus produk ini?</p>
+            <h2 class="text-2xl mb-4">Hapus Outlet</h2>
+            <p>Apakah Anda yakin ingin menghapus outlet ini?</p>
             <form id="deleteProductForm" method="POST">
                 @csrf
                 @method('DELETE')
@@ -172,18 +160,17 @@
             document.getElementById('deleteProductModal').classList.add('hidden');
         });
 
-        function openEditModal(product) {
-            document.getElementById('edit_barcode').value = product.barcode;
-            document.getElementById('edit_name').value = product.name;
-            document.getElementById('edit_stock_quantity').value = product.stock.quantity;
-            document.getElementById('edit_purchase_price').value = product.price.purchase_price;
-            document.getElementById('edit_selling_price').value = product.price.selling_price;
-            document.getElementById('editProductForm').action = `/daftar_barang/${product.id}`;
+        function openEditModal(stall) {
+            document.getElementById('edit_name').value = stall.name;
+            document.getElementById('edit_address').value = stall.address;
+            document.getElementById('edit_phone').value = stall.phone;
+            document.getElementById('edit_email').value = stall.email;
+            document.getElementById('editProductForm').action = `/daftar_outlet/${stall.id}`;
             document.getElementById('editProductModal').classList.remove('hidden');
         }
 
-        function openDeleteModal(productId) {
-            document.getElementById('deleteProductForm').action = `/daftar_barang/${productId}`;
+        function openDeleteModal(stallId) {
+            document.getElementById('deleteProductForm').action = `/daftar_outlet/${stallId}`;
             document.getElementById('deleteProductModal').classList.remove('hidden');
         }
     </script>

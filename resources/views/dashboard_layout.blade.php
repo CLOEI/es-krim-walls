@@ -3,7 +3,7 @@
 @section('content')
     <div class="flex h-screen overflow-hidden bg-[#F5F5F5]">
         <div class="bg-white h-screen flex-shrink-0 sticky top-0">
-            <h1 class="text-[#46A2A2] text-3xl font-bold text-center py-4">Admin</h1>
+            <h2 class="text-[#46A2A2] text-3xl font-bold text-center py-4">Admin</h2>
             <div class="px-10 space-y-4 mt-10">
                 <a href="/"
                     class="flex space-x-2 items-center {{ Route::currentRouteName() == 'app' ? 'text-green-500' : '' }}">
@@ -45,6 +45,28 @@
                         </svg>
                     </div>
                     <p>Daftar Barang</p>
+                </a>
+                <a href="/daftar_outlet"
+                   class="flex space-x-2 items-center {{ Route::currentRouteName() == 'daftar_outlet' ? 'text-green-500' : '' }}">
+                    <div><svg width="34" height="34" viewBox="0 0 34 34"
+                              fill="{{ Route::currentRouteName() == 'daftar_outlet' ? '#46A2A2' : '' }}"
+                              xmlns="http://www.w3.org/2000/svg">
+                            <g clip-path="url(#clip0_0_145)">
+                                <path
+                                    d="M26.4443 28.3333H15.1109V20.7778H13.2221V28.3333H7.55539V20.7778H5.6665V28.3333C5.6665 28.8343 5.86551 29.3147 6.21975 29.669C6.57398 30.0232 7.05443 30.2222 7.55539 30.2222H26.4443C26.9452 30.2222 27.4257 30.0232 27.7799 29.669C28.1342 29.3147 28.3332 28.8343 28.3332 28.3333V20.7778H26.4443V28.3333Z"
+                                    fill="#766F6F" />
+                                <path
+                                    d="M31.9126 12.5328L28.0592 4.8261C27.9029 4.5114 27.6618 4.24657 27.3631 4.06137C27.0645 3.87617 26.7201 3.77796 26.3687 3.77777H7.63091C7.2795 3.77796 6.9351 3.87617 6.63645 4.06137C6.3378 4.24657 6.09673 4.5114 5.94035 4.8261L2.08702 12.5328C1.95546 12.7967 1.88753 13.0878 1.88869 13.3828V16.2917C1.88782 16.733 2.04153 17.1607 2.32313 17.5006C2.73931 17.9776 3.25331 18.3595 3.83021 18.6202C4.40711 18.881 5.03338 19.0145 5.66646 19.0117C6.69947 19.0133 7.70097 18.6561 8.4998 18.0011C9.29862 18.6564 10.2999 19.0146 11.3331 19.0146C12.3664 19.0146 13.3676 18.6564 14.1665 18.0011C14.9653 18.6564 15.9666 19.0146 16.9998 19.0146C18.033 19.0146 19.0343 18.6564 19.8331 18.0011C20.632 18.6564 21.6332 19.0146 22.6665 19.0146C23.6997 19.0146 24.701 18.6564 25.4998 18.0011C26.3915 18.7333 27.5323 19.0912 28.6825 18.9996C29.8326 18.908 30.9024 18.374 31.667 17.51C31.952 17.1715 32.1091 16.7436 32.1109 16.3011V13.3828C32.1121 13.0878 32.0441 12.7967 31.9126 12.5328ZM14.1665 13.6V15.0355L13.392 16.0555C13.1543 16.3796 12.8436 16.6431 12.4851 16.8247C12.1265 17.0063 11.7303 17.101 11.3284 17.101C10.9265 17.101 10.5303 17.0063 10.1718 16.8247C9.81324 16.6431 9.50254 16.3796 9.2648 16.0555L8.4998 14.9978V13.6L10.9459 5.66666H15.1109L14.1665 13.6ZM25.4998 14.9978L24.7348 16.0555C24.4971 16.3796 24.1864 16.6431 23.8278 16.8247C23.4693 17.0063 23.0731 17.101 22.6712 17.101C22.2693 17.101 21.873 17.0063 21.5145 16.8247C21.156 16.6431 20.8453 16.3796 20.6076 16.0555L19.8331 14.9978V13.6L18.8887 5.66666H23.0915L25.4998 13.6V14.9978Z"
+                                    fill="#766F6F" />
+                            </g>
+                            <defs>
+                                <clipPath id="clip0_0_145">
+                                    <rect width="34" height="34" fill="white" />
+                                </clipPath>
+                            </defs>
+                        </svg>
+                    </div>
+                    <p>Daftar Outlet</p>
                 </a>
                 <a href="/daftar_barang_keluar"
                     class="flex space-x-2 items-center {{ Route::currentRouteName() == 'daftar_barang_keluar' ? 'text-green-500' : '' }}">
@@ -173,7 +195,8 @@
             </div>
         </div>
         <div class="w-full flex flex-col overflow-y-auto">
-            <div class="h-20 flex-shrink-0 bg-[#138FA0] flex items-center justify-end px-10">
+            <div class="h-20 flex-shrink-0 bg-[#138FA0] flex items-center justify-between px-10">
+                <h1 class="font-bold text-white">ALDORA SUKSES PERKASA</h1>
                 @if(auth()->user()->role == 'manager')
                     <a href="/admin" class="flex space-x-2 items-center">
                         <img src="{{"https://api.dicebear.com/9.x/lorelei/svg?seed=". auth()->user()->first_name . auth()->user()->last_name}}" class="w-12 h-12" alt="profile">
