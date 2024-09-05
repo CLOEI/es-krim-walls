@@ -7,9 +7,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', "App\Http\Controllers\DashboardController@show")->name('app')->middleware('auth:sanctum');
 
-Route::get("/login", function () {
-    return view('login');
-})->name('login');
+Route::get("/login", "App\Http\Controllers\AuthController@showLoginForm")->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 
 Route::get('/register', function () {

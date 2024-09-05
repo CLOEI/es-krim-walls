@@ -15,7 +15,7 @@
                         <div class="auth-input-container space-x-2">
                             <div>
                                 <svg width="18" height="17" viewBox="0 0 18 17" fill="none"
-                                    xmlns="http://www.w3.org/2000/svg">
+                                     xmlns="http://www.w3.org/2000/svg">
                                     <g clip-path="url(#clip0_0_1813)">
                                         <path
                                             d="M12.4391 4.3252H3.08091C2.43486 4.3252 1.91113 4.84892 1.91113 5.49497V11.3438C1.91113 11.9899 2.43486 12.5136 3.08091 12.5136H12.4391C13.0852 12.5136 13.6089 11.9899 13.6089 11.3438V5.49497C13.6089 4.84892 13.0852 4.3252 12.4391 4.3252Z"
@@ -29,7 +29,7 @@
                                     <defs>
                                         <clipPath id="clip0_0_1813">
                                             <rect width="16.3295" height="16.3295" fill="white"
-                                                transform="translate(0.741211 0.230957)" />
+                                                  transform="translate(0.741211 0.230957)" />
                                         </clipPath>
                                     </defs>
                                 </svg>
@@ -42,7 +42,7 @@
                         <div class="auth-input-container space-x-2">
                             <div>
                                 <svg width="18" height="17" viewBox="0 0 18 17" fill="none"
-                                    xmlns="http://www.w3.org/2000/svg">
+                                     xmlns="http://www.w3.org/2000/svg">
                                     <g clip-path="url(#clip0_0_1819)">
                                         <path
                                             d="M11.8548 6.5387H3.66636C3.02031 6.5387 2.49658 7.06242 2.49658 7.70847V11.8027C2.49658 12.4487 3.02031 12.9725 3.66636 12.9725H11.8548C12.5008 12.9725 13.0246 12.4487 13.0246 11.8027V7.70847C13.0246 7.06242 12.5008 6.5387 11.8548 6.5387Z"
@@ -56,7 +56,7 @@
                                     <defs>
                                         <clipPath id="clip0_0_1819">
                                             <rect width="16.3295" height="16.3295" fill="white"
-                                                transform="translate(0.741699 0.10498)" />
+                                                  transform="translate(0.741699 0.10498)" />
                                         </clipPath>
                                     </defs>
                                 </svg>
@@ -71,9 +71,11 @@
                                 <input type="checkbox" id="remember" name="remember">
                                 <label for="remember">Remember me</label>
                             </div>
-                            <div>
-                                <a href="/register" class="text-blue-600 underline">Belum punya akun</a>
-                            </div>
+                            @if (!$installed)
+                                <div>
+                                    <a href="/register" class="text-blue-600 underline">Belum punya akun</a>
+                                </div>
+                            @endif
                         </div>
                         <button type="submit" class="w-full rounded-md text-white py-3 bg-[#096BA2] active:scale-95">
                             Masuk

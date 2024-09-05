@@ -69,4 +69,12 @@ class AuthController extends Controller
         $request->session()->regenerateToken();
         return redirect()->route('login');
     }
+
+    public function showLoginForm()
+    {
+        $config = json_decode(File::get(base_path('config.json')), true);
+        $installed = $config['installed'] ?? false;
+
+        return view('login', compact('installed'));
+    }
 }
