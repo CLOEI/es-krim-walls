@@ -17,7 +17,7 @@ class ProductOut extends Model
     protected $fillable = [
         'stalls_id',
         'products_id',
-        'price',
+        'quantity',
         'date',
     ];
 

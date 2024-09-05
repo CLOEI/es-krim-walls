@@ -22,25 +22,35 @@ class ProductOutController extends Controller
     public function create(Request $request)
     {
         $request->validate([
-            'product_id' => 'required|exists:products,id',
-            'price' => 'required|numeric',
             'stall_id' => 'required|exists:stalls,id',
-            'date' => 'required|date',
+            'products.*.product_id' => 'required|exists:products,id',
+            'products.*.quantity' => 'required|numeric',
         ]);
 
-        DB::BeginTransaction();
+        DB::beginTransaction();
         try {
-            ProductOut::create([
-                'products_id' => $request->product_id,
-                'price' => $request->price,
-                'stalls_id' => $request->stall_id,
-                'date' => $request->date,
-            ]);
+            foreach ($request->products as $product) {
+                $stockProduct = Product::find($product['product_id']);
+                if ($stockProduct->stock->quantity < $product['quantity']) {
+                    return redirect()->route('daftar_barang_keluar')->with('error', 'Stock is not enough');
+                }
+
+                ProductOut::create([
+                    'products_id' => $product['product_id'],
+                    'quantity' => $product['quantity'],
+                    'stalls_id' => $request->stall_id,
+                    'date' => now(),
+                ]);
+
+                $stockProduct->stock->quantity -= $product['quantity'];
+                $stockProduct->stock->save();
+            }
             DB::commit();
-            return redirect()->route('daftar_barang_keluar')->with('success', 'Product Out created successfully');
+            return redirect()->route('daftar_barang_keluar')->with('success', 'Products Out created successfully');
         } catch (\Exception $e) {
-            Log::error('Failed to create product out: ' . $e->getMessage());
-            return redirect()->route('daftar_barang_keluar')->with('error', 'Product Out failed to create');
+            DB::rollBack();
+            Log::error('Failed to create products out: ' . $e->getMessage());
+            return redirect()->route('daftar_barang_keluar')->with('error', $e->getMessage());
         }
     }
 
