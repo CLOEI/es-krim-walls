@@ -7,15 +7,23 @@ use App\Models\ProductIn;
 use App\Models\ProductOut;
 use App\Models\Stock;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
     public function show()
     {
-        // get products count, Producin count,  productout count
+        $currentMonth = Carbon::now()->month;
+        $currentYear = Carbon::now()->year;
+
         $productsCount = Product::all()->count();
-        $productsInCount = ProductIn::all()->count();
-        $productsOutCount = ProductOut::all()->count();
+        $productsInCount = ProductIn::whereMonth('created_at', $currentMonth)
+            ->whereYear('created_at', $currentYear)
+            ->count();
+
+        $productsOutCount = ProductOut::whereMonth('created_at', $currentMonth)
+            ->whereYear('created_at', $currentYear)
+            ->count();
         $currentStockQuantity = Stock::all()->sum('quantity');
         $averageDailyStatistics = ProductOut::selectRaw('AVG(items_gone) as average_items_gone')
             ->fromSub(function ($query) {
