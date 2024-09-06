@@ -58,7 +58,11 @@ class ProductOutController extends Controller
     {
         DB::BeginTransaction();
         try {
-            ProductOut::destroy($id);
+            $product_out = ProductOut::find($id);
+            $product = Product::find($product_out->products_id);
+            $product->stock->quantity += $product_out->quantity;
+            $product->stock->save();
+            $product_out->delete();
             DB::commit();
             return redirect()->route('daftar_barang_keluar')->with('success', 'Product Out removed successfully');
         } catch (\Exception $e) {
@@ -71,7 +75,7 @@ class ProductOutController extends Controller
     {
         $request->validate([
             'product_id' => 'required|exists:products,id',
-            'price' => 'required|numeric',
+            'quantity' => 'required|numeric',
             'stall_id' => 'required|exists:stalls,id',
             'date' => 'required|date',
         ]);
@@ -79,12 +83,17 @@ class ProductOutController extends Controller
         DB::BeginTransaction();
         try {
             $product_out = ProductOut::find($id);
+            $product = Product::find($product_out->products_id);
+            $product->stock->quantity += $product_out->quantity;
+            $product->stock->quantity -= $request->quantity;
             $product_out->update([
                 'products_id' => $request->product_id,
-                'price' => $request->price,
+                'quantity' => $request->quantity,
                 'stalls_id' => $request->stall_id,
                 'date' => $request->date,
             ]);
+            $product_out->save();
+            $product->stock->save();
             DB::commit();
             return redirect()->route('daftar_barang_keluar')->with('success', 'Product Out updated successfully');
         } catch (\Exception $e) {
