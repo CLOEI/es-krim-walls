@@ -54,8 +54,7 @@
                             <td class="px-4 py-2 border">{{ $product->product->name }}</td>
                             <td class="px-4 py-2 border">{{ $product->date }}</td>
                             <td class="px-4 py-2 border">{{ $product->quantity }}</td>
-                            <td class="px-4 py-2 border">Rp {{ $product->quantity * $product->product->price->purchase_price }}</td>
-                            @if(auth()->user()->role == "manager")
+                            <td class="px-4 py-2 border">Rp {{ number_format($product->quantity * $product->product->price->purchase_price, 0, ',', '.') }}</td>                            @if(auth()->user()->role == "manager")
                                 <td class="px-4 py-2 border space-x-1 flex">
                                     <button class="bg-[#27B847] px-3.5 py-1.5 rounded-sm text-white" onclick="openEditModal({{ $product }})">Edit</button>
                                     <button class="bg-[#EB4335] px-3.5 py-1.5 rounded-sm text-white" onclick="openDeleteModal({{ $product->id }})">Delete</button>
@@ -108,8 +107,8 @@
                 @csrf
                 @method('PUT')
                 <div class="mb-4">
-                    <label for="product_id" class="block text-sm font-medium text-gray-700">Nama Barang</label>
-                    <select id="product_id" name="product_id" class="select2" required>
+                    <label for="product_id2" class="block text-sm font-medium text-gray-700">Nama Barang</label>
+                    <select id="product_id2" name="product_id" class="select2" required>
                         <option value="">Select a product...</option>
                         @foreach($products as $product)
                             <option value="{{ $product->id }}">{{ $product->name }}</option>
@@ -167,7 +166,7 @@
 
         function openEditModal(product) {
             document.getElementById('editProductForm').action = `/daftar_barang_masuk/${product.id}`;
-            document.querySelector('#editProductForm #product_id').value = product.product_id;
+            document.querySelector('#editProductForm #product_id2').value = product.product_id;
             document.querySelector('#editProductForm #quantity').value = product.quantity;
             document.querySelector('#editProductForm #date').value = product.date;
             document.querySelector('#editProductModal').classList.remove('hidden');

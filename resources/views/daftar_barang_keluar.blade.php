@@ -74,7 +74,7 @@
                 @csrf
                 <div class="mb-4">
                     <label for="stall_id" class="block text-sm font-medium text-gray-700">Search Nama Toko</label>
-                    <select id="stall_id" name="stall_id" class="select2" placeholder="Search for stall..." required>
+                    <select id="stall_id" name="stall_id" class="select2 w-full border-2 border-gray-200 py-2 px-4 rounded-md mt-2" required>
                         <option value="">Select a stall...</option>
                         @foreach($stalls as $stall)
                             <option value="{{ $stall->id }}">{{ $stall->name }}</option>
@@ -127,8 +127,8 @@
                 @csrf
                 @method('PUT')
                 <div class="mb-4">
-                    <label for="stall_id" class="block text-sm font-medium text-gray-700">Nama Toko</label>
-                    <select id="stall_id" name="stall_id" class="select2 w-full border-2 border-gray-200 py-2 px-4 rounded-md mt-2" required>
+                    <label for="stall_id2" class="block text-sm font-medium text-gray-700">Nama Toko</label>
+                    <select id="stall_id2" name="stall_id" class="select2 w-full border-2 border-gray-200 py-2 px-4 rounded-md mt-2" required>
                         <option value="">Select a stall...</option>
                         @foreach($stalls as $stall)
                             <option value="{{ $stall->id }}">{{ $stall->name }}</option>
@@ -177,6 +177,10 @@
     </div>
 
     <script>
+        $(document).ready(function() {
+            $('select.select2').select2();
+        });
+
         document.getElementById('openTambahBarangKeluarModalBtn').addEventListener('click', function () {
             document.getElementById('tambahBarangKeluarModal').classList.remove('hidden');
         });
@@ -195,7 +199,7 @@
 
         function openEditModal(product) {
             document.getElementById('editProductForm').action = `/daftar_barang_keluar/${product.id}`;
-            document.querySelector('#editProductForm #stall_id').value = product.stall_id;
+            document.querySelector('#editProductForm #stall_id2').value = product.stall_id;
             document.querySelector('#editProductForm #product_id').value = product.product_id;
             document.querySelector('#editProductForm #quantity').value = product.quantity;
             document.querySelector('#editProductForm #date').value = product.date;
@@ -237,10 +241,6 @@
             if (e.target && e.target.classList.contains('remove-product-btn')) {
                 e.target.closest('.product-item').remove();
             }
-        });
-
-        $(document).ready(function() {
-            $('.select2').select2();
         });
     </script>
 @endsection

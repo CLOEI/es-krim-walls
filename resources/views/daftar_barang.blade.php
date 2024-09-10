@@ -64,10 +64,9 @@
                             <td class="px-4 py-2 border">{{ $product->name }}</td>
                             <td class="px-4 py-2 border">{{ $product->created_at->format('Y-m-d') }}</td>
                             <td class="px-4 py-2 border">{{ $product->stock->quantity }}</td>
-                            <td class="px-4 py-2 border">Rp {{ $product->price->purchase_price }}</td>
-                            <td class="px-4 py-2 border">Rp {{ $product->price->selling_price }}</td>
-                            <td class="px-4 py-2 border">
-                                Rp.{{ $product->stock->quantity * $product->price->purchase_price }}</td>
+                            <td class="px-4 py-2 border">Rp {{ number_format($product->price->purchase_price, 0, ',', '.') }}</td>
+                            <td class="px-4 py-2 border">Rp {{ number_format($product->price->selling_price, 0, ',', '.') }}</td>
+                            <td class="px-4 py-2 border">Rp {{ number_format($product->stock->quantity * $product->price->purchase_price, 0, ',', '.') }}</td>
                             @if(auth()->user()->role == "manager")
                                 <td class="px-4 py-2 border space-x-1 flex">
                                     <button class="bg-[#27B847] px-3.5 py-1.5 rounded-sm text-white"
