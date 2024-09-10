@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Models\ProductIn;
 use App\Models\Stall;
-use App\Models\Stock;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -24,26 +23,32 @@ class ProductInController extends Controller
     {
         $request->validate([
             'product_id' => 'required|exists:products,id',
-            'quantity' => 'required|numeric',
+            'carton' => 'required|numeric',
+            'piece' => 'required|numeric',
             'date' => 'required|date',
         ]);
 
-        DB::BeginTransaction();
+        DB::beginTransaction();
         try {
+            $product = Product::find($request->product_id);
+            $total_quantity = $request->carton * $product->ppc + $request->piece;
+
             ProductIn::create([
                 'products_id' => $request->product_id,
-                'quantity' => $request->quantity,
+                'carton' => $request->carton,
+                'pcs' => $request->piece,
                 'date' => $request->date,
             ]);
 
-            $stock = Product::find($request->product_id)->stock;
-            $stock->quantity += $request->quantity;
+            $stock = $product->stock;
+            $stock->quantity += $total_quantity;
             $stock->save();
 
             DB::commit();
             return redirect()->route('daftar_barang_masuk')->with('success', 'Product In created successfully');
         } catch (\Exception $e) {
-            Log::error('Failed to create product out: ' . $e->getMessage());
+            DB::rollBack();
+            Log::error('Failed to create product in: ' . $e->getMessage());
             return redirect()->route('daftar_barang_masuk')->with('error', 'Product In failed to create');
         }
     }
@@ -52,30 +57,34 @@ class ProductInController extends Controller
     {
         $request->validate([
             'product_id' => 'required|exists:products,id',
-            'quantity' => 'required|numeric',
+            'carton' => 'required|numeric',
+            'piece' => 'required|numeric',
             'date' => 'required|date',
         ]);
 
-        DB::BeginTransaction();
+        DB::beginTransaction();
         try {
             $product_in = ProductIn::find($id);
-            $old_stock = Product::find($product_in->products_id)->stock;
-            $old_stock->quantity -= $product_in->quantity;
-            $old_stock->save();
+            $product = Product::find($product_in->products_id);
 
-            $product_in->products_id = $request->product_id;
-            $product_in->quantity = $request->quantity;
-            $product_in->date = $request->date;
-            $product_in->save();
+            $new_total_quantity = $request->carton * $product->ppc + $request->piece;
+            $old_total_quantity = $product_in->carton * $product->ppc + $product_in->pcs;
 
-            $new_stock = Product::find($request->product_id)->stock;
-            $new_stock->quantity += $request->quantity;
-            $new_stock->save();
+            $product->stock->quantity -= $old_total_quantity;
+            $product->stock->quantity += $new_total_quantity;
 
+            $product_in->update([
+                'products_id' => $request->product_id,
+                'carton' => $request->carton,
+                'pcs' => $request->piece,
+                'date' => $request->date,
+            ]);
 
+            $product->stock->save();
             DB::commit();
             return redirect()->route('daftar_barang_masuk')->with('success', 'Product In updated successfully');
         } catch (\Exception $e) {
+            DB::rollBack();
             Log::error('Failed to update product in: ' . $e->getMessage());
             return redirect()->route('daftar_barang_masuk')->with('error', 'Product In failed to update');
         }
@@ -83,16 +92,22 @@ class ProductInController extends Controller
 
     public function remove($id)
     {
-        DB::BeginTransaction();
+        DB::beginTransaction();
         try {
             $product_in = ProductIn::find($id);
-            $stock = Product::find($product_in->products_id)->stock;
-            $stock->quantity -= $product_in->quantity;
-            $stock->save();
+            $product = Product::find($product_in->products_id);
+
+            $total_quantity = $product_in->carton * $product->ppc + $product_in->pcs;
+
+            $product->stock->quantity -= $total_quantity;
+            $product->stock->save();
+
             $product_in->delete();
+
             DB::commit();
             return redirect()->route('daftar_barang_masuk')->with('success', 'Product In removed successfully');
         } catch (\Exception $e) {
+            DB::rollBack();
             Log::error('Failed to remove product in: ' . $e->getMessage());
             return redirect()->route('daftar_barang_masuk')->with('error', 'Product In failed to remove');
         }

@@ -55,7 +55,7 @@
                             <td class="px-4 py-2 border">{{ $product->date }}</td>
                             <td class="px-4 py-2 border">{{ $product->product->name }}</td>
                             <td class="px-4 py-2 border">{{ $product->carton }}</td>
-                            <td class="px-4 py-2 border">{{ $product->piece }}</td>
+                            <td class="px-4 py-2 border">{{ $product->pcs }}</td>
                             @if(auth()->user()->role == "manager")
                                 <td class="px-4 py-2 border text-center">
                                     <button type="button" class="py-2 px-4 bg-[#27B847] text-white rounded-md"

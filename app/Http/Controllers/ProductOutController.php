@@ -95,14 +95,19 @@ class ProductOutController extends Controller
             $product_out = ProductOut::find($id);
             $product = Product::find($product_out->products_id);
 
+            // Calculate new total quantity
             $new_total_quantity = $request->carton * $product->ppc + $request->piece;
+            $old_total_quantity = $product_out->carton * $product->ppc + $product_out->pcs;
 
-            $product->stock->quantity += $product_out->quantity;
-            $product->stock->quantity -= $new_total_quantity;
+            // Update stock
+            $product->stock->quantity += $old_total_quantity; // Add old total quantity back to stock
+            $product->stock->quantity -= $new_total_quantity; // Subtract new total quantity from stock
 
+            // Update product out record
             $product_out->update([
                 'products_id' => $request->product_id,
-                'quantity' => $new_total_quantity,
+                'carton' => $request->carton,
+                'pcs' => $request->piece,
                 'stalls_id' => $request->stall_id,
                 'date' => $request->date,
             ]);

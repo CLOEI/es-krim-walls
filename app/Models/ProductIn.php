@@ -17,7 +17,8 @@ class ProductIn extends Model
      */
     protected $fillable = [
         'products_id',
-        'quantity',
+        'carton',
+        'pcs',
         'price',
         'date',
     ];

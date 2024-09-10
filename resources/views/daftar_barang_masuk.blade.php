@@ -27,7 +27,9 @@
     @endif
 
     <div class="text-left mt-12">
-        <button id="openTambahBarangKeluarModalBtn" class="py-3 px-4 bg-[#096BA2] text-white rounded-md">Tambah Barang Masuk</button>
+        <button id="openTambahBarangKeluarModalBtn" class="py-3 px-4 bg-[#096BA2] text-white rounded-md">Tambah Barang
+            Masuk
+        </button>
         <div class="mt-4">
             @if($products_in->isEmpty())
                 <p class="text-center text-gray-500">There are no products.</p>
@@ -39,7 +41,8 @@
                         <th class="px-4 py-2 border">Barcode</th>
                         <th class="px-4 py-2 border">Nama Produk</th>
                         <th class="px-4 py-2 border">Tanggal</th>
-                        <th class="px-4 py-2 border">Jumlah</th>
+                        <th class="px-4 py-2 border">Carton</th>
+                        <th class="px-4 py-2 border">Piece</th>
                         <th class="px-4 py-2 border">Total Harga Pembelian</th>
                         @if(auth()->user()->role == "manager")
                             <th class="px-4 py-2 border">Aksi</th>
@@ -53,11 +56,18 @@
                             <td class="px-4 py-2 border">{{ $product->product->barcode }}</td>
                             <td class="px-4 py-2 border">{{ $product->product->name }}</td>
                             <td class="px-4 py-2 border">{{ $product->date }}</td>
-                            <td class="px-4 py-2 border">{{ $product->quantity }}</td>
-                            <td class="px-4 py-2 border">Rp {{ number_format($product->quantity * $product->product->price->purchase_price, 0, ',', '.') }}</td>                            @if(auth()->user()->role == "manager")
+                            <td class="px-4 py-2 border">{{ $product->carton }}</td>
+                            <td class="px-4 py-2 border">{{ $product->pcs }}</td>
+                            <td class="px-4 py-2 border">
+                                Rp {{ number_format(($product->carton * $product->product->ppc + $product->pcs) * $product->product->price->purchase_price, 0, ',', '.') }}</td>
+                            @if(auth()->user()->role == "manager")
                                 <td class="px-4 py-2 border space-x-1 flex">
-                                    <button class="bg-[#27B847] px-3.5 py-1.5 rounded-sm text-white" onclick="openEditModal({{ $product }})">Edit</button>
-                                    <button class="bg-[#EB4335] px-3.5 py-1.5 rounded-sm text-white" onclick="openDeleteModal({{ $product->id }})">Delete</button>
+                                    <button class="bg-[#27B847] px-3.5 py-1.5 rounded-sm text-white"
+                                            onclick="openEditModal({{ $product }})">Edit
+                                    </button>
+                                    <button class="bg-[#EB4335] px-3.5 py-1.5 rounded-sm text-white"
+                                            onclick="openDeleteModal({{ $product->id }})">Delete
+                                    </button>
                                 </td>
                             @endif
                         </tr>
@@ -69,7 +79,8 @@
     </div>
 
     <!-- Add Product In Modal -->
-    <div id="tambahBarangKeluarModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
+    <div id="tambahBarangKeluarModal"
+         class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
         <div class="bg-white p-6 rounded-md shadow-md w-1/3">
             <h2 class="text-2xl mb-4">Tambah Barang Masuk</h2>
             <form action="/daftar_barang_masuk" method="POST">
@@ -84,15 +95,24 @@
                     </select>
                 </div>
                 <div class="mb-4">
-                    <label for="quantity" class="block text-sm font-medium text-gray-700">Jumlah</label>
-                    <input type="number" name="quantity" id="quantity" class="w-full border-2 border-gray-200 py-2 px-4 rounded-md mt-2" required>
+                    <label for="carton" class="block text-sm font-medium text-gray-700">Carton</label>
+                    <input type="number" name="carton" id="quantity"
+                           class="w-full border-2 border-gray-200 py-2 px-4 rounded-md mt-2" required>
+                </div>
+                <div class="mb-4">
+                    <label for="piece" class="block text-sm font-medium text-gray-700">Piece</label>
+                    <input type="number" name="piece" id="piece"
+                           class="w-full border-2 border-gray-200 py-2 px-4 rounded-md mt-2" required>
                 </div>
                 <div class="mb-4">
                     <label for="date" class="block text-sm font-medium text-gray-700">Tanggal</label>
-                    <input type="date" name="date" id="date" class="w-full border-2 border-gray-200 py-2 px-4 rounded-md mt-2" required>
+                    <input type="date" name="date" id="date"
+                           class="w-full border-2 border-gray-200 py-2 px-4 rounded-md mt-2" required>
                 </div>
                 <div class="flex justify-end">
-                    <button type="button" id="closeTambahBarangKeluarModalBtn" class="py-2 px-4 bg-gray-500 text-white rounded-md mr-2">Cancel</button>
+                    <button type="button" id="closeTambahBarangKeluarModalBtn"
+                            class="py-2 px-4 bg-gray-500 text-white rounded-md mr-2">Cancel
+                    </button>
                     <button type="submit" class="py-2 px-4 bg-blue-600 text-white rounded-md">Save</button>
                 </div>
             </form>
@@ -116,15 +136,24 @@
                     </select>
                 </div>
                 <div class="mb-4">
-                    <label for="quantity" class="block text-sm font-medium text-gray-700">Jumlah</label>
-                    <input type="number" name="quantity" id="quantity" class="w-full border-2 border-gray-200 py-2 px-4 rounded-md mt-2" required>
+                    <label for="carton" class="block text-sm font-medium text-gray-700">Carton</label>
+                    <input type="number" name="carton" id="carton"
+                           class="w-full border-2 border-gray-200 py-2 px-4 rounded-md mt-2" required>
+                </div>
+                <div class="mb-4">
+                    <label for="piece" class="block text-sm font-medium text-gray-700">Piece</label>
+                    <input type="number" name="piece" id="piece"
+                           class="w-full border-2 border-gray-200 py-2 px-4 rounded-md mt-2" required>
                 </div>
                 <div class="mb-4">
                     <label for="date" class="block text-sm font-medium text-gray-700">Tanggal</label>
-                    <input type="date" name="date" id="date" class="w-full border-2 border-gray-200 py-2 px-4 rounded-md mt-2" required>
+                    <input type="date" name="date" id="date"
+                           class="w-full border-2 border-gray-200 py-2 px-4 rounded-md mt-2" required>
                 </div>
                 <div class="flex justify-end">
-                    <button type="button" id="closeEditModalBtn" class="py-2 px-4 bg-gray-500 text-white rounded-md mr-2">Cancel</button>
+                    <button type="button" id="closeEditModalBtn"
+                            class="py-2 px-4 bg-gray-500 text-white rounded-md mr-2">Cancel
+                    </button>
                     <button type="submit" class="py-2 px-4 bg-blue-600 text-white rounded-md">Save</button>
                 </div>
             </form>
@@ -132,7 +161,8 @@
     </div>
 
     <!-- Delete Confirmation Modal -->
-    <div id="deleteProductModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
+    <div id="deleteProductModal"
+         class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
         <div class="bg-white p-6 rounded-md shadow-md w-1/3">
             <h2 class="text-2xl mb-4">Hapus Barang Masuk</h2>
             <p>Apakah Anda yakin ingin menghapus produk ini?</p>
@@ -140,7 +170,9 @@
                 @csrf
                 @method('DELETE')
                 <div class="flex justify-end mt-4">
-                    <button type="button" id="closeDeleteModalBtn" class="py-2 px-4 bg-gray-500 text-white rounded-md mr-2">Cancel</button>
+                    <button type="button" id="closeDeleteModalBtn"
+                            class="py-2 px-4 bg-gray-500 text-white rounded-md mr-2">Cancel
+                    </button>
                     <button type="submit" class="py-2 px-4 bg-red-600 text-white rounded-md">Delete</button>
                 </div>
             </form>
@@ -165,9 +197,11 @@
         });
 
         function openEditModal(product) {
+            console.log(product)
             document.getElementById('editProductForm').action = `/daftar_barang_masuk/${product.id}`;
             document.querySelector('#editProductForm #product_id2').value = product.product_id;
-            document.querySelector('#editProductForm #quantity').value = product.quantity;
+            document.querySelector('#editProductForm #carton').value = product.carton;
+            document.querySelector('#editProductForm #piece').value = product.pcs;
             document.querySelector('#editProductForm #date').value = product.date;
             document.querySelector('#editProductModal').classList.remove('hidden');
             $('.select2').select2();
@@ -178,7 +212,7 @@
             document.getElementById('deleteProductModal').classList.remove('hidden');
         }
 
-        $(document).ready(function() {
+        $(document).ready(function () {
             $('.select2').select2();
         });
     </script>
