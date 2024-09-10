@@ -27,6 +27,7 @@ class ProductController extends Controller
         $validatedData = $request->validate([
             'barcode' => 'required|string|max:255',
             'name' => 'required|string|max:255',
+            'ppc' => 'required|integer',
             'purchase_price' => 'required|numeric',
             'selling_price' => 'required|numeric',
         ]);
@@ -36,6 +37,7 @@ class ProductController extends Controller
         try {
             $product = Product::create([
                 'barcode' => $validatedData['barcode'],
+                'ppc' => $validatedData['ppc'],
                 'name' => $validatedData['name'],
             ]);
 

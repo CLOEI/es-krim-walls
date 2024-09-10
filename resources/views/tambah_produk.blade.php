@@ -39,6 +39,11 @@
                        value="{{ old('name') }}">
             </div>
             <div>
+                <p>Jumlah piece per carton</p>
+                <input type="number" name="ppc" class="w-full border-2 border-gray-200 py-2 px-4 rounded-md mt-2"
+                       value="{{ old('ppc') }}">
+            </div>
+            <div>
                 <p>Harga Beli</p>
                 <input type="number" name="purchase_price" class="w-full border-2 border-gray-200 py-2 px-4 rounded-md mt-2"
                        value="{{ old('purchase_price') }}">

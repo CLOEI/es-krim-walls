@@ -18,6 +18,7 @@ class Product extends Model
     protected $fillable = [
         'barcode',
         'name',
+        'ppc',
         'stocks_id',
         'prices_id',
     ];

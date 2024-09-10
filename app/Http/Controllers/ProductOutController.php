@@ -24,25 +24,29 @@ class ProductOutController extends Controller
         $request->validate([
             'stall_id' => 'required|exists:stalls,id',
             'products.*.product_id' => 'required|exists:products,id',
-            'products.*.quantity' => 'required|numeric',
+            'products.*.carton' => 'required|numeric',
+            'products.*.piece' => 'required|numeric',
         ]);
 
         DB::beginTransaction();
         try {
             foreach ($request->products as $product) {
                 $stockProduct = Product::find($product['product_id']);
-                if ($stockProduct->stock->quantity < $product['quantity']) {
+                $total_quantity = $product['carton'] * $stockProduct->ppc + $product['piece'];
+
+                if ($stockProduct->stock->quantity < $total_quantity) {
                     return redirect()->route('daftar_barang_keluar')->with('error', 'Stock is not enough');
                 }
 
                 ProductOut::create([
                     'products_id' => $product['product_id'],
-                    'quantity' => $product['quantity'],
+                    'carton' => $product['carton'],
+                    'pcs' => $product['piece'],
                     'stalls_id' => $request->stall_id,
                     'date' => now(),
                 ]);
 
-                $stockProduct->stock->quantity -= $product['quantity'];
+                $stockProduct->stock->quantity -= $total_quantity;
                 $stockProduct->stock->save();
             }
             DB::commit();
@@ -56,16 +60,21 @@ class ProductOutController extends Controller
 
     public function remove($id)
     {
-        DB::BeginTransaction();
+        DB::beginTransaction();
         try {
             $product_out = ProductOut::find($id);
             $product = Product::find($product_out->products_id);
-            $product->stock->quantity += $product_out->quantity;
+            $total_quantity = $product_out->carton * $product->ppc + $product_out->pcs;
+
+            $product->stock->quantity += $total_quantity;
             $product->stock->save();
+
             $product_out->delete();
+
             DB::commit();
             return redirect()->route('daftar_barang_keluar')->with('success', 'Product Out removed successfully');
         } catch (\Exception $e) {
+            DB::rollBack();
             Log::error('Failed to remove product out: ' . $e->getMessage());
             return redirect()->route('daftar_barang_keluar')->with('error', 'Product Out failed to remove');
         }
@@ -75,28 +84,34 @@ class ProductOutController extends Controller
     {
         $request->validate([
             'product_id' => 'required|exists:products,id',
-            'quantity' => 'required|numeric',
+            'carton' => 'required|numeric',
+            'piece' => 'required|numeric',
             'stall_id' => 'required|exists:stalls,id',
             'date' => 'required|date',
         ]);
 
-        DB::BeginTransaction();
+        DB::beginTransaction();
         try {
             $product_out = ProductOut::find($id);
             $product = Product::find($product_out->products_id);
+
+            $new_total_quantity = $request->carton * $product->ppc + $request->piece;
+
             $product->stock->quantity += $product_out->quantity;
-            $product->stock->quantity -= $request->quantity;
+            $product->stock->quantity -= $new_total_quantity;
+
             $product_out->update([
                 'products_id' => $request->product_id,
-                'quantity' => $request->quantity,
+                'quantity' => $new_total_quantity,
                 'stalls_id' => $request->stall_id,
                 'date' => $request->date,
             ]);
-            $product_out->save();
+
             $product->stock->save();
             DB::commit();
             return redirect()->route('daftar_barang_keluar')->with('success', 'Product Out updated successfully');
         } catch (\Exception $e) {
+            DB::rollBack();
             Log::error('Failed to update product out: ' . $e->getMessage());
             return redirect()->route('daftar_barang_keluar')->with('error', 'Product Out failed to update');
         }
