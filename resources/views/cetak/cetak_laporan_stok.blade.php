@@ -11,12 +11,6 @@
         <div class="h-1 bg-black mt-16 mb-7"></div>
         <div>
             <p class="text-right text-lg">{{ \Carbon\Carbon::now()->locale('id')->isoFormat('D MMMM YYYY') }}</p>
-            <div class="grid grid-cols-2">
-                <p class="text-lg">Tanggal Awal</p>
-                <p class="text-lg" id="tanggal-awal">: </p>
-                <p class="text-lg">Tanggal Akhir</p>
-                <p class="text-lg" id="tanggal-akhir">: </p>
-            </div>
             <table class="min-w-full border-collapse mt-9">
                 <thead>
                 <tr class="bg-[#597697] text-white">
@@ -62,9 +56,6 @@
             .then(response => response.json())
             .then(data => {
                 const tbody = document.querySelector('tbody');
-                console.log(data)
-                tanggalAwal.textContent = `: ${currentQueryParams["from_date"]}`;
-                tanggalAkhir.textContent = `: ${currentQueryParams["to_date"]}`;
                 tbody.innerHTML = '';
                 data.products.forEach((product, index) => {
                     const row = document.createElement('tr');
