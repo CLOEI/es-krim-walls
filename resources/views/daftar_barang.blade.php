@@ -66,10 +66,10 @@
                             <td class="px-4 py-2 border">{{ $product->barcode }}</td>
                             <td class="px-4 py-2 border">{{ $product->name }}</td>
                             <td class="px-4 py-2 border">{{ $product->created_at->format('Y-m-d') }}</td>
-                            <td class="px-4 py-2 border">{{ $product->stock->quantity }}</td>
+                            <td class="px-4 py-2 border">{{ $product->stock->carton * $product->ppc + $product->stock->piece }}</td>
                             <td class="px-4 py-2 border">Rp {{ number_format($product->price->purchase_price, 0, ',', '.') }}</td>
                             <td class="px-4 py-2 border">Rp {{ number_format($product->price->selling_price, 0, ',', '.') }}</td>
-                            <td class="px-4 py-2 border">Rp {{ number_format($product->stock->quantity * $product->price->purchase_price, 0, ',', '.') }}</td>
+                            <td class="px-4 py-2 border">Rp {{ number_format(($product->stock->carton * $product->ppc + $product->stock->piece) * $product->price->purchase_price, 0, ',', '.') }}</td>
                             @if(auth()->user()->role == "manager")
                                 <td class="px-4 py-2 border space-x-1 flex">
                                     <button class="bg-[#27B847] px-3.5 py-1.5 rounded-sm text-white"
@@ -105,11 +105,11 @@
                     <input type="text" name="name" id="edit_name"
                            class="w-full border-2 border-gray-200 py-2 px-4 rounded-md mt-2">
                 </div>
-                <div class="mb-4">
-                    <label for="edit_stock_quantity" class="block text-sm font-medium text-gray-700">Jumlah Stok</label>
-                    <input type="number" name="stock_quantity" id="edit_stock_quantity"
-                           class="w-full border-2 border-gray-200 py-2 px-4 rounded-md mt-2">
-                </div>
+{{--                <div class="mb-4">--}}
+{{--                    <label for="edit_stock_quantity" class="block text-sm font-medium text-gray-700">Jumlah Stok</label>--}}
+{{--                    <input type="number" name="stock_quantity" id="edit_stock_quantity"--}}
+{{--                           class="w-full border-2 border-gray-200 py-2 px-4 rounded-md mt-2">--}}
+{{--                </div>--}}
                 <div class="mb-4">
                     <label for="edit_purchase_price" class="block text-sm font-medium text-gray-700">Harga Beli</label>
                     <input type="number" name="purchase_price" id="edit_purchase_price"
@@ -177,7 +177,7 @@
         function openEditModal(product) {
             document.getElementById('edit_barcode').value = product.barcode;
             document.getElementById('edit_name').value = product.name;
-            document.getElementById('edit_stock_quantity').value = product.stock.quantity;
+            // document.getElementById('edit_stock_quantity').value = product.stock.quantity;
             document.getElementById('edit_purchase_price').value = product.price.purchase_price;
             document.getElementById('edit_selling_price').value = product.price.selling_price;
             document.getElementById('editProductForm').action = `/daftar_barang/${product.id}`;

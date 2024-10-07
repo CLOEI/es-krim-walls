@@ -78,8 +78,15 @@ class ProductOutController extends Controller
 
             $product->stock->carton += $product_out->carton;
             $product->stock->piece += $product_out->pcs;
-            $product->stock->save();
 
+            // Normalize stock if pieces exceed pieces per carton
+            if ($product->stock->piece >= $product->ppc) {
+                $additional_cartons = intdiv($product->stock->piece, $product->ppc);
+                $product->stock->carton += $additional_cartons;
+                $product->stock->piece = $product->stock->piece % $product->ppc;
+            }
+
+            $product->stock->save();
             $product_out->delete();
 
             DB::commit();
@@ -108,8 +115,17 @@ class ProductOutController extends Controller
 
             $product->stock->carton -= $product_out->carton;
             $product->stock->piece -= $product_out->pcs;
+
             $product->stock->carton += $request->carton;
             $product->stock->piece += $request->piece;
+
+            // Normalize stock if pieces are negative
+            if ($product->stock->piece < 0) {
+                $missing_cartons = intdiv(abs($product->stock->piece), $product->ppc) + 1;
+                $product->stock->carton -= $missing_cartons;
+                $product->stock->piece += $missing_cartons * $product->ppc;
+            }
+
             $product->stock->save();
 
             // Update product out record

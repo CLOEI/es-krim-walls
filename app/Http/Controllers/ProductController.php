@@ -42,7 +42,8 @@ class ProductController extends Controller
             ]);
 
             $stock = Stock::create([
-                'quantity' => 0,
+                'carton' => 0,
+                'piece' => 0,
                 'product_id' => $product->id,
             ]);
 
@@ -88,7 +89,7 @@ class ProductController extends Controller
 
             $stock = Stock::find($product->stocks_id);
             $stock->update([
-                'quantity' => $validatedData['stock_quantity'],
+                'carton' => $validatedData['stock_quantity'],
             ]);
 
             $price = Price::find($product->prices_id);
