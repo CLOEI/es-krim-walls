@@ -22,39 +22,50 @@ class ProductOutController extends Controller
     public function create(Request $request)
     {
         $request->validate([
-            'stall_id' => 'required|exists:stalls,id',
-            'products.*.product_id' => 'required|exists:products,id',
-            'products.*.carton' => 'required|numeric',
-            'products.*.piece' => 'required|numeric',
+            'product_id' => 'required|exists:products,id',
+            'carton' => 'required|numeric',
+            'piece' => 'required|numeric',
+            'date' => 'required|date',
         ]);
 
         DB::beginTransaction();
         try {
-            foreach ($request->products as $product) {
-                $stockProduct = Product::find($product['product_id']);
-                $total_quantity = $product['carton'] * $stockProduct->ppc + $product['piece'];
+            $product = Product::find($request->product_id);
+            $total_quantity = $request->carton * $product->ppc + $request->piece;
 
-                if ($stockProduct->stock->quantity < $total_quantity) {
-                    return redirect()->route('daftar_barang_keluar')->with('error', 'Stock is not enough');
-                }
+            $stock = $product->stock;
+            $current_total_quantity = $stock->carton * $product->ppc + $stock->piece;
 
-                ProductOut::create([
-                    'products_id' => $product['product_id'],
-                    'carton' => $product['carton'],
-                    'pcs' => $product['piece'],
-                    'stalls_id' => $request->stall_id,
-                    'date' => now(),
-                ]);
-
-                $stockProduct->stock->quantity -= $total_quantity;
-                $stockProduct->stock->save();
+            // Check if stock is sufficient
+            if ($total_quantity > $current_total_quantity) {
+                return redirect()->route('daftar_barang_masuk')->with('error', 'Insufficient stock to create Product Out');
             }
+
+            ProductOut::create([
+                'products_id' => $request->product_id,
+                'carton' => $request->carton,
+                'pcs' => $request->piece,
+                'date' => $request->date,
+            ]);
+
+            $stock->carton -= $request->carton;
+            $stock->piece -= $request->piece;
+
+            // Normalize stock if pieces are negative
+            if ($stock->piece < 0) {
+                $missing_cartons = intdiv(abs($stock->piece), $product->ppc) + 1;
+                $stock->carton -= $missing_cartons;
+                $stock->piece += $missing_cartons * $product->ppc;
+            }
+
+            $stock->save();
+
             DB::commit();
-            return redirect()->route('daftar_barang_keluar')->with('success', 'Products Out created successfully');
+            return redirect()->route('daftar_barang_masuk')->with('success', 'Product Out created successfully');
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Failed to create products out: ' . $e->getMessage());
-            return redirect()->route('daftar_barang_keluar')->with('error', $e->getMessage());
+            Log::error('Failed to create product out: ' . $e->getMessage());
+            return redirect()->route('daftar_barang_masuk')->with('error', 'Product Out failed to create');
         }
     }
 
@@ -64,9 +75,9 @@ class ProductOutController extends Controller
         try {
             $product_out = ProductOut::find($id);
             $product = Product::find($product_out->products_id);
-            $total_quantity = $product_out->carton * $product->ppc + $product_out->pcs;
 
-            $product->stock->quantity += $total_quantity;
+            $product->stock->carton += $product_out->carton;
+            $product->stock->piece += $product_out->pcs;
             $product->stock->save();
 
             $product_out->delete();
@@ -95,13 +106,11 @@ class ProductOutController extends Controller
             $product_out = ProductOut::find($id);
             $product = Product::find($product_out->products_id);
 
-            // Calculate new total quantity
-            $new_total_quantity = $request->carton * $product->ppc + $request->piece;
-            $old_total_quantity = $product_out->carton * $product->ppc + $product_out->pcs;
-
-            // Update stock
-            $product->stock->quantity += $old_total_quantity; // Add old total quantity back to stock
-            $product->stock->quantity -= $new_total_quantity; // Subtract new total quantity from stock
+            $product->stock->carton -= $product_out->carton;
+            $product->stock->piece -= $product_out->pcs;
+            $product->stock->carton += $request->carton;
+            $product->stock->piece += $request->piece;
+            $product->stock->save();
 
             // Update product out record
             $product_out->update([
@@ -112,7 +121,6 @@ class ProductOutController extends Controller
                 'date' => $request->date,
             ]);
 
-            $product->stock->save();
             DB::commit();
             return redirect()->route('daftar_barang_keluar')->with('success', 'Product Out updated successfully');
         } catch (\Exception $e) {
