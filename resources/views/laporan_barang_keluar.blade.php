@@ -98,7 +98,10 @@
                     <td class="px-4 py-2 border">${product.stall.name}</td>
                     <td class="px-4 py-2 border">${product.date}</td>
                     <td class="px-4 py-2 border">${product.product.name}</td>
-                    <td class="px-4 py-2 border">Rp ${product.price}</td>
+                    <td class="px-4 py-2 border">${new Intl.NumberFormat('id-ID', {
+                            style: 'currency',
+                            currency: 'IDR'
+                        }).format((product.carton * product.product.ppc + product.pcs) * product.product.price.purchase_price)}</td>
                 `;
 
                         tbody.appendChild(row);
