@@ -17,7 +17,8 @@ class Stock extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'quantity',
+        'carton',
+        'piece',
     ];
 
     /**

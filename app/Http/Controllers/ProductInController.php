@@ -25,13 +25,13 @@ class ProductInController extends Controller
             'product_id' => 'required|exists:products,id',
             'carton' => 'required|numeric',
             'piece' => 'required|numeric',
+            'piece_per_carton' => 'required|numeric',
             'date' => 'required|date',
         ]);
 
         DB::beginTransaction();
         try {
             $product = Product::find($request->product_id);
-            $total_quantity = $request->carton * $product->ppc + $request->piece;
 
             ProductIn::create([
                 'products_id' => $request->product_id,
@@ -40,8 +40,12 @@ class ProductInController extends Controller
                 'date' => $request->date,
             ]);
 
+            $product->ppc = $request->piece_per_carton;
+            $product->save();
+
             $stock = $product->stock;
-            $stock->quantity += $total_quantity;
+            $stock->carton += $request->carton;
+            $stock->piece += $request->piece;
             $stock->save();
 
             DB::commit();
@@ -59,19 +63,22 @@ class ProductInController extends Controller
             'product_id' => 'required|exists:products,id',
             'carton' => 'required|numeric',
             'piece' => 'required|numeric',
+            'piece_per_carton' => 'required|numeric',
             'date' => 'required|date',
         ]);
 
         DB::beginTransaction();
         try {
             $product_in = ProductIn::find($id);
-            $product = Product::find($product_in->products_id);
+            $product = Product::find($product_in->products_id);;
 
-            $new_total_quantity = $request->carton * $product->ppc + $request->piece;
-            $old_total_quantity = $product_in->carton * $product->ppc + $product_in->pcs;
-
-            $product->stock->quantity -= $old_total_quantity;
-            $product->stock->quantity += $new_total_quantity;
+            $product->stock->carton -= $product_in->carton;
+            $product->stock->piece -= $product_in->pcs;
+            $product->stock->carton += $request->carton;
+            $product->stock->piece += $request->piece;
+            $product->ppc = $request->piece_per_carton;
+            $product->stock->save();
+            $product->save();
 
             $product_in->update([
                 'products_id' => $request->product_id,
@@ -80,7 +87,6 @@ class ProductInController extends Controller
                 'date' => $request->date,
             ]);
 
-            $product->stock->save();
             DB::commit();
             return redirect()->route('daftar_barang_masuk')->with('success', 'Product In updated successfully');
         } catch (\Exception $e) {
@@ -97,9 +103,9 @@ class ProductInController extends Controller
             $product_in = ProductIn::find($id);
             $product = Product::find($product_in->products_id);
 
-            $total_quantity = $product_in->carton * $product->ppc + $product_in->pcs;
 
-            $product->stock->quantity -= $total_quantity;
+            $product->stock->carton -= $product_in->carton;
+            $product->stock->piece -= $product_in->pcs;
             $product->stock->save();
 
             $product_in->delete();
