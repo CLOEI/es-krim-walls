@@ -24,7 +24,9 @@ class DashboardController extends Controller
         $productsOutCount = ProductOut::whereMonth('created_at', $currentMonth)
             ->whereYear('created_at', $currentYear)
             ->count();
-        $currentStockQuantity = Stock::all()->sum('quantity');
+        $currentStockQuantity = Product::all()->sum(function ($product) {
+            return $product->stock->carton * $product->ppc + $product->stock->piece;
+        });
         $averageDailyStatistics = ProductOut::selectRaw('AVG(items_gone) as average_items_gone')
             ->fromSub(function ($query) {
                 $query->selectRaw('date, COUNT(*) as items_gone')

@@ -22,50 +22,53 @@ class ProductOutController extends Controller
     public function create(Request $request)
     {
         $request->validate([
-            'product_id' => 'required|exists:products,id',
-            'carton' => 'required|numeric',
-            'piece' => 'required|numeric',
-            'date' => 'required|date',
+            'stall_id' => 'required|exists:stalls,id',
+            'products.*.product_id' => 'required|exists:products,id',
+            'products.*.carton' => 'required|numeric',
+            'products.*.piece' => 'required|numeric',
         ]);
 
         DB::beginTransaction();
         try {
-            $product = Product::find($request->product_id);
-            $total_quantity = $request->carton * $product->ppc + $request->piece;
+            foreach ($request->products as $productData) {
+                $product = Product::find($productData['product_id']);
+                $total_quantity = $productData['carton'] * $product->ppc + $productData['piece'];
 
-            $stock = $product->stock;
-            $current_total_quantity = $stock->carton * $product->ppc + $stock->piece;
+                $stock = $product->stock;
+                $current_total_quantity = $stock->carton * $product->ppc + $stock->piece;
 
-            // Check if stock is sufficient
-            if ($total_quantity > $current_total_quantity) {
-                return redirect()->route('daftar_barang_masuk')->with('error', 'Insufficient stock to create Product Out');
+                // Check if stock is sufficient
+                if ($total_quantity > $current_total_quantity) {
+                    return redirect()->route('daftar_barang_masuk')->with('error', 'Insufficient stock to create Product Out');
+                }
+
+                ProductOut::create([
+                    'products_id' => $productData['product_id'],
+                    'carton' => $productData['carton'],
+                    'pcs' => $productData['piece'],
+                    'date' => $request->date,
+                    'stalls_id' => $request->stall_id,
+                ]);
+
+                $stock->carton -= $productData['carton'];
+                $stock->piece -= $productData['piece'];
+
+                // Normalize stock if pieces are negative
+                if ($stock->piece < 0) {
+                    $missing_cartons = intdiv(abs($stock->piece), $product->ppc) + 1;
+                    $stock->carton -= $missing_cartons;
+                    $stock->piece += $missing_cartons * $product->ppc;
+                }
+
+                $stock->save();
             }
-
-            ProductOut::create([
-                'products_id' => $request->product_id,
-                'carton' => $request->carton,
-                'pcs' => $request->piece,
-                'date' => $request->date,
-            ]);
-
-            $stock->carton -= $request->carton;
-            $stock->piece -= $request->piece;
-
-            // Normalize stock if pieces are negative
-            if ($stock->piece < 0) {
-                $missing_cartons = intdiv(abs($stock->piece), $product->ppc) + 1;
-                $stock->carton -= $missing_cartons;
-                $stock->piece += $missing_cartons * $product->ppc;
-            }
-
-            $stock->save();
 
             DB::commit();
-            return redirect()->route('daftar_barang_masuk')->with('success', 'Product Out created successfully');
+            return redirect()->route('daftar_barang_keluar')->with('success', 'Product Out created successfully');
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Failed to create product out: ' . $e->getMessage());
-            return redirect()->route('daftar_barang_masuk')->with('error', 'Product Out failed to create');
+            return redirect()->route('daftar_barang_keluar')->with('error', 'Product Out failed to create');
         }
     }
 
@@ -113,17 +116,24 @@ class ProductOutController extends Controller
             $product_out = ProductOut::find($id);
             $product = Product::find($product_out->products_id);
 
-            $product->stock->carton -= $product_out->carton;
-            $product->stock->piece -= $product_out->pcs;
+            $product->stock->carton += $product_out->carton;
+            $product->stock->piece += $product_out->pcs;
 
-            $product->stock->carton += $request->carton;
-            $product->stock->piece += $request->piece;
+            $product->stock->carton -= $request->carton;
+            $product->stock->piece -= $request->piece;
 
             // Normalize stock if pieces are negative
             if ($product->stock->piece < 0) {
                 $missing_cartons = intdiv(abs($product->stock->piece), $product->ppc) + 1;
                 $product->stock->carton -= $missing_cartons;
                 $product->stock->piece += $missing_cartons * $product->ppc;
+            }
+
+            // Normalize stock if pieces exceed pieces per carton
+            if ($product->stock->piece >= $product->ppc) {
+                $additional_cartons = intdiv($product->stock->piece, $product->ppc);
+                $product->stock->carton += $additional_cartons;
+                $product->stock->piece = $product->stock->piece % $product->ppc;
             }
 
             $product->stock->save();
