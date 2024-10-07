@@ -25,7 +25,6 @@ class ProductInController extends Controller
             'product_id' => 'required|exists:products,id',
             'carton' => 'required|numeric',
             'piece' => 'required|numeric',
-            'piece_per_carton' => 'required|numeric',
             'date' => 'required|date',
         ]);
 
@@ -39,9 +38,6 @@ class ProductInController extends Controller
                 'pcs' => $request->piece,
                 'date' => $request->date,
             ]);
-
-            $product->ppc = $request->piece_per_carton;
-            $product->save();
 
             $stock = $product->stock;
             $stock->carton += $request->carton;
@@ -63,7 +59,6 @@ class ProductInController extends Controller
             'product_id' => 'required|exists:products,id',
             'carton' => 'required|numeric',
             'piece' => 'required|numeric',
-            'piece_per_carton' => 'required|numeric',
             'date' => 'required|date',
         ]);
 
@@ -76,7 +71,6 @@ class ProductInController extends Controller
             $product->stock->piece -= $product_in->pcs;
             $product->stock->carton += $request->carton;
             $product->stock->piece += $request->piece;
-            $product->ppc = $request->piece_per_carton;
             $product->stock->save();
             $product->save();
 
