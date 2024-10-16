@@ -59,7 +59,7 @@
                             <td class="px-4 py-2 border">{{ $product->carton }}</td>
                             <td class="px-4 py-2 border">{{ $product->pcs }}</td>
                             <td class="px-4 py-2 border">
-                                Rp {{ number_format(($product->carton * $product->product->ppc + $product->pcs) * $product->product->price->purchase_price, 0, ',', '.') }}</td>
+                                Rp {{ number_format((($product->carton * $product->product->ppc + $product->pcs) / $product->product->ppc) * $product->product->price->purchase_price, 0, ',', '.') }}</td>
                             @if(auth()->user()->role == "manager")
                                 <td class="px-4 py-2 border space-x-1 flex">
                                     <button class="bg-[#27B847] px-3.5 py-1.5 rounded-sm text-white"

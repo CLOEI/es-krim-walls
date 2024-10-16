@@ -50,7 +50,8 @@
                         <th class="px-4 py-2 border">Barcode</th>
                         <th class="px-4 py-2 border">Nama Produk</th>
                         <th class="px-4 py-2 border">Tanggal</th>
-                        <th class="px-4 py-2 border">Jumlah Stok</th>
+                        <th class="px-4 py-2 border">Carton</th>
+                        <th class="px-4 py-2 border">Piece</th>
                         <th class="px-4 py-2 border">Harga Beli</th>
                         <th class="px-4 py-2 border">Harga Jual</th>
                         <th class="px-4 py-2 border">Nilai Stok</th>
@@ -66,10 +67,11 @@
                             <td class="px-4 py-2 border">{{ $product->barcode }}</td>
                             <td class="px-4 py-2 border">{{ $product->name }}</td>
                             <td class="px-4 py-2 border">{{ $product->created_at->format('Y-m-d') }}</td>
-                            <td class="px-4 py-2 border">{{ $product->stock->carton * $product->ppc + $product->stock->piece }}</td>
+                            <td class="px-4 py-2 border">{{ $product->stock->carton }}</td>
+                            <td class="px-4 py-2 border">{{ $product->stock->piece }}</td>
                             <td class="px-4 py-2 border">Rp {{ number_format($product->price->purchase_price, 0, ',', '.') }}</td>
                             <td class="px-4 py-2 border">Rp {{ number_format($product->price->selling_price, 0, ',', '.') }}</td>
-                            <td class="px-4 py-2 border">Rp {{ number_format(($product->stock->carton * $product->ppc + $product->stock->piece) * $product->price->purchase_price, 0, ',', '.') }}</td>
+                            <td class="px-4 py-2 border">Rp {{ number_format((($product->stock->carton * $product->ppc + $product->stock->piece) / $product->ppc) * $product->price->purchase_price, 0, ',', '.') }}</td>
                             @if(auth()->user()->role == "manager")
                                 <td class="px-4 py-2 border space-x-1 flex">
                                     <button class="bg-[#27B847] px-3.5 py-1.5 rounded-sm text-white"
