@@ -5,8 +5,7 @@
         <div class="flex flex-col items-center justify-center mt-20">
             <h1 class="font-bold text-4xl">Laporan Stok</h1>
             <p class="font-bold text-2xl max-w-xl mt-2 text-center">PT Aldora sukses perkasa</p>
-            <p class="text-xl font-medium max-w-xl mt-2 text-center">Jl. Surya Kencana No.1, Pamulang Bar., Kec.
-                Pamulang, Kota Tangerang Selatan, Banten 15417</p>
+            <p class="text-xl font-medium max-w-xl mt-2 text-center">Jl R.E Martadinata Blok A No. 9 Tanjungpinang Timur, Kepri, Indonesia</p>
         </div>
         <div class="h-1 bg-black mt-16 mb-7"></div>
         <div>

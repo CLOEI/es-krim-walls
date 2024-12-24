@@ -112,11 +112,11 @@
                                 </select>
                             </td>
                             <td class="px-4 py-2 border">
-                                <input type="number" name="products[0][carton]"
+                                <input type="number" name="products[0][carton]" min="0"
                                        class="w-full border-2 border-gray-200 py-2 px-4 rounded-md" required>
                             </td>
                             <td class="px-4 py-2 border">
-                                <input type="number" name="products[0][piece]"
+                                <input type="number" name="products[0][piece]" min="0"
                                        class="w-full border-2 border-gray-200 py-2 px-4 rounded-md" required>
                             </td>
                             <td class="px-4 py-2 border text-center">
@@ -168,12 +168,12 @@
                 </div>
                 <div class="mb-4">
                     <label for="carton" class="block text-sm font-medium text-gray-700">Carton</label>
-                    <input type="number" name="carton" id="carton"
+                    <input type="number" name="carton" id="carton" min="0"
                            class="w-full border-2 border-gray-200 py-2 px-4 rounded-md mt-2" required>
                 </div>
                 <div class="mb-4">
                     <label for="piece" class="block text-sm font-medium text-gray-700">Piece</label>
-                    <input type="number" name="piece" id="piece"
+                    <input type="number" name="piece" id="piece" min="0"
                            class="w-full border-2 border-gray-200 py-2 px-4 rounded-md mt-2" required>
                 </div>
                 <div class="mb-4">

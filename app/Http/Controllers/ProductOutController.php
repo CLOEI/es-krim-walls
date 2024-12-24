@@ -46,7 +46,7 @@ class ProductOutController extends Controller
                     'products_id' => $productData['product_id'],
                     'carton' => $productData['carton'],
                     'pcs' => $productData['piece'],
-                    'date' => $request->date,
+                    'date' => now(),
                     'stalls_id' => $request->stall_id,
                 ]);
 
