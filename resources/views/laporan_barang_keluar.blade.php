@@ -52,7 +52,7 @@
                 <tr class="bg-[#597697] text-white">
                     <th class="px-4 py-2 border">No</th>
                     <th class="px-4 py-2 border">List Nama Toko</th>
-                    <th class="px-4 py-2 border">Tanggal</th>
+                    <th class="px-4 py-2 border">Tanggal & Waktu</th>
                     <th class="px-4 py-2 border">Produk</th>
                     <th class="px-4 py-2 border">Carton</th>
                     <th class="px-4 py-2 border">Piece</th>
@@ -95,10 +95,22 @@
                         const row = document.createElement('tr');
                         row.className = index % 2 === 0 ? 'bg-[#FFFFFF00]' : 'bg-[#FFFFFF]';
 
+                        // Format datetime for display
+                        const date = new Date(product.date);
+                        const formattedDate = date.toLocaleDateString('id-ID', {
+                            day: '2-digit',
+                            month: '2-digit',
+                            year: 'numeric'
+                        }) + ' ' + date.toLocaleTimeString('id-ID', {
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            hour12: false
+                        });
+
                         row.innerHTML = `
                     <td class="px-4 py-2 border">${index + 1}</td>
                     <td class="px-4 py-2 border">${product.stall.name}</td>
-                    <td class="px-4 py-2 border">${product.date}</td>
+                    <td class="px-4 py-2 border">${formattedDate}</td>
                     <td class="px-4 py-2 border">${product.product.name}</td>
                     <td class="px-4 py-2 border">${product.carton}</td>
                     <td class="px-4 py-2 border">${product.pcs}</td>

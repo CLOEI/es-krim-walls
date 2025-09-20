@@ -23,6 +23,7 @@ class ProductOutController extends Controller
     {
         $request->validate([
             'stall_id' => 'required|exists:stalls,id',
+            'date' => 'required|date',
             'products.*.product_id' => 'required|exists:products,id',
             'products.*.carton' => 'required|numeric',
             'products.*.piece' => 'required|numeric',
@@ -46,7 +47,7 @@ class ProductOutController extends Controller
                     'products_id' => $productData['product_id'],
                     'carton' => $productData['carton'],
                     'pcs' => $productData['piece'],
-                    'date' => now(),
+                    'date' => $request->date,
                     'stalls_id' => $request->stall_id,
                 ]);
 

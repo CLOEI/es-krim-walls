@@ -22,6 +22,10 @@ class ProductOut extends Model
         'date',
     ];
 
+    protected $casts = [
+        'date' => 'datetime',
+    ];
+
     /**
      * Get the stall that owns the ProductOut.
      */

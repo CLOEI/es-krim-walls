@@ -52,7 +52,7 @@
                         <tr class="{{ $index % 2 == 0 ? 'bg-[#FFFFFF00]' : 'bg-[#FFFFFF]' }}">
                             <td class="px-4 py-2 border">{{ $index + 1 }}</td>
                             <td class="px-4 py-2 border">{{ $product->stall->name }}</td>
-                            <td class="px-4 py-2 border">{{ $product->date }}</td>
+                            <td class="px-4 py-2 border">{{ $product->date->format('d/m/Y H:i') }}</td>
                             <td class="px-4 py-2 border">{{ $product->product->name }}</td>
                             <td class="px-4 py-2 border">{{ $product->carton }}</td>
                             <td class="px-4 py-2 border">{{ $product->pcs }}</td>
@@ -126,6 +126,11 @@
                         </tbody>
                     </table>
                 </div>
+                <div class="mb-4">
+                    <label for="date_input" class="block text-sm font-medium text-gray-700">Tanggal & Waktu</label>
+                    <input type="datetime-local" name="date" id="date_input"
+                           class="w-full border-2 border-gray-200 py-2 px-4 rounded-md mt-2" required>
+                </div>
                 <button type="button" id="addProductBtn" class="py-2 px-4 bg-green-500 text-white rounded-md mb-4">Add
                     Another Product
                 </button>
@@ -177,8 +182,8 @@
                            class="w-full border-2 border-gray-200 py-2 px-4 rounded-md mt-2" required>
                 </div>
                 <div class="mb-4">
-                    <label for="date" class="block text-sm font-medium text-gray-700">Tanggal</label>
-                    <input type="date" name="date" id="date"
+                    <label for="date" class="block text-sm font-medium text-gray-700">Tanggal & Waktu</label>
+                    <input type="datetime-local" name="date" id="date"
                            class="w-full border-2 border-gray-200 py-2 px-4 rounded-md mt-2" required>
                 </div>
                 <div class="flex justify-end">
@@ -216,6 +221,15 @@
         });
 
         document.getElementById('openTambahBarangKeluarModalBtn').addEventListener('click', function () {
+            // Set current date and time as default
+            const now = new Date();
+            const datetime = now.getFullYear() + '-' +
+                           String(now.getMonth() + 1).padStart(2, '0') + '-' +
+                           String(now.getDate()).padStart(2, '0') + 'T' +
+                           String(now.getHours()).padStart(2, '0') + ':' +
+                           String(now.getMinutes()).padStart(2, '0');
+            document.getElementById('date_input').value = datetime;
+
             document.getElementById('tambahBarangKeluarModal').classList.remove('hidden');
         });
 
@@ -237,7 +251,14 @@
             document.querySelector('#editProductForm #product_id').value = product.product_id;
             document.querySelector('#editProductForm #carton').value = product.carton;
             document.querySelector('#editProductForm #piece').value = product.pcs;
-            document.querySelector('#editProductForm #date').value = product.date;
+            // Format datetime for datetime-local input (YYYY-MM-DDTHH:MM)
+            const productDate = new Date(product.date);
+            const formattedDate = productDate.getFullYear() + '-' +
+                                String(productDate.getMonth() + 1).padStart(2, '0') + '-' +
+                                String(productDate.getDate()).padStart(2, '0') + 'T' +
+                                String(productDate.getHours()).padStart(2, '0') + ':' +
+                                String(productDate.getMinutes()).padStart(2, '0');
+            document.querySelector('#editProductForm #date').value = formattedDate;
             document.querySelector('#editProductModal').classList.remove('hidden');
             $('.select2').select2();
         }
