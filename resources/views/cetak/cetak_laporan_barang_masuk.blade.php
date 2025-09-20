@@ -5,7 +5,7 @@
         <div class="flex flex-col items-center justify-center mt-20">
             <h1 class="font-bold text-4xl">Laporan Barang Masuk</h1>
             <p class="font-bold text-2xl max-w-xl mt-2 text-center">PT Aldora sukses perkasa</p>
-            <p class="text-xl font-medium max-w-xl mt-2 text-center">Jl R.E Martadinata Blok A No. 9 Tanjungpinang Timur, Kepri, Indonesia</p>
+            <p class="text-xl font-medium max-w-xl mt-2 text-center">Jl R.E.Martadinata No 9 A KP Bulang Tanjungpinang</p>
         </div>
         <div class="h-1 bg-black mt-16 mb-7"></div>
         <div>
